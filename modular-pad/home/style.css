@@ -1,0 +1,63 @@
+/* 平板端主页专属毛玻璃样式 */
+/* 文件目录：JASPERBLOG/modular-pad/home/style.css */
+
+.home-module-pad {
+    display: flex; flex-direction: column; gap: 16px;
+    padding: 20px; box-sizing: border-box; height: 100%; width: 100%; max-width: 1000px; margin: 0 auto;
+}
+
+/* 玻璃卡片效果 */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid #4F9CF7;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* 1. 轮播图 (Pad 高度) */
+.hero-carousel { height: 200px; padding: 0; position: relative; overflow: hidden; }
+.carousel-btn { width: 36px; height: 36px; border: 1px solid #4F9CF7; background: rgba(0,0,0,0.3); border-radius: 50%; color: #fff; position: absolute; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 3; }
+.carousel-btn.prev { left: 15px; } .carousel-btn.next { right: 15px; }
+.carousel-track { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+.carousel-slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; }
+.slide-bg { width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.6) blur(2px); }
+.slide-content-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 30px; display: flex; flex-direction: column; justify-content: center; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+.slide-content-overlay h2 { font-size: 28px; font-weight: 700; margin: 0 0 6px 0; }
+.slide-content-overlay p { font-size: 16px; opacity: 0.9; margin: 0; }
+.carousel-indicators { position: absolute; bottom: 15px; display: flex; gap: 8px; left: 50%; transform: translateX(-50%); z-index: 3; }
+.indicator { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.3s; border: none; }
+.indicator.active { background: #fff; width: 20px; border-radius: 6px; }
+
+/* 2. 平板两栏布局 */
+.pad-two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 1:1 两栏分布 */
+    gap: 16px;
+    flex: 1;
+    min-height: 300px;
+}
+.pad-col-left { display: flex; flex-direction: column; gap: 16px; }
+.pad-col-right { display: flex; flex-direction: column; }
+
+/* 卡片内部 */
+.card { padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease; }
+.card-header { background: rgba(255, 255, 255, 0.08); padding: 12px 20px; font-weight: 600; color: #fff; border-bottom: 1px solid rgba(79, 156, 247, 0.3); flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+.card-body { padding: 16px; flex: 1; overflow-y: auto; color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.6; }
+.card-body::-webkit-scrollbar { width: 4px; }
+.card-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+/* 历史发布列表 */
+#historyList li { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: 0.2s; }
+#historyList li:hover { color: #ffffff; transform: translateX(4px); }
+
+/* 3. 音乐播放器组件 (继承电脑端 CSS) */
+.music-item { padding: 6px 10px; margin: 2px 0; border-radius: 6px; cursor: pointer; color: rgba(255,255,255,0.7); transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+.music-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.music-item-active { background: rgba(255,255,255,0.15); color: #fff; }
+.player-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.ctrl-btn { background: transparent; border: none; color: rgba(255,255,255,0.7); font-size: 16px; cursor: pointer; transition: 0.2s; }
+.ctrl-btn:hover { color: #fff; }
+.vol-slider { width: 50px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; outline: none; cursor: pointer; }
+.progress-fill { height: 100%; width: 0%; background: #4F9CF7; border-radius: 2px; transition: width 0.1s; }

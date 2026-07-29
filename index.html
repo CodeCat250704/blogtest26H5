@@ -1,0 +1,181 @@
+<!-- 根目录入口 · 唯一入口 · 加载基础外壳、任务栏及全局模式切换器 -->
+<!-- 文件目录：JASPERBLOG/index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JASPERBLOG 系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, sans-serif;
+            background-color: #2c2c2c;
+        }
+        #root {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        /* 核心：将来加载的模块页面放在这里面 */
+        #app-module-container {
+            position: absolute;
+            top: 80px;   /* 让出给上方的 mode-switcher */
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 150px); /* 减去顶部和任务栏的高度 */
+            overflow-y: auto;
+            z-index: 10;
+            pointer-events: none; /* 不阻断外部点击，内部可覆盖 */
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const root = document.getElementById('root');
+            
+            // 1. 加载底层界面骨架 (桌面毛玻璃背景、占位区)
+            fetch('./overall-situation/index.html').then(res => res.text()).then(html => {
+                root.innerHTML = html;
+                
+                // 2. 动态注入【内容区域容器】(专门用来放模块的)
+                const appContainer = document.createElement('div');
+                appContainer.id = 'app-module-container';
+                root.appendChild(appContainer);
+
+                // 3. 加载全局核心 CSS
+                const link = document.createElement('link');
+                link.rel = 'stylesheet'; 
+                link.href = './overall-situation/overall.css';
+                document.head.appendChild(link);
+
+                // 4. 加载任务栏
+                const taskbarWrapper = document.getElementById('taskbar-wrapper');
+                if (taskbarWrapper) {
+                    fetch('./overall-situation/taskbar/index.html').then(r => r.text()).then(h => taskbarWrapper.innerHTML = h);
+                }
+
+                // 5. 加载模式切换面板
+                fetch('./mode-switcher/index.html').then(r => r.text()).then(h => {
+                    // 如果旧的容器还残留着，先删掉它
+                    const oldContainer = document.getElementById('global-mode-switcher');
+                    if (oldContainer) oldContainer.remove();
+
+                    // 用最顶端的方法重新建立
+                    const modeContainer = document.createElement('div');
+                    modeContainer.id = 'global-mode-switcher';
+                    document.body.insertBefore(modeContainer, document.body.firstChild);
+                    modeContainer.innerHTML = h; 
+
+                    // 手动加载它专属的 CSS
+                    const switcherLink = document.createElement('link');
+                    switcherLink.rel = 'stylesheet';
+                    switcherLink.href = './mode-switcher/style.css';
+                    document.head.appendChild(switcherLink);
+                });
+
+                // 6. 按序加载底层的 JS 脚本
+                setTimeout(() => {
+                    const scripts = [
+                        './overall-situation/equipment.js',
+                        './overall-situation/overall.js',
+                        './overall-situation/taskbar/script.js',
+                        './overall-situation/right-click/script.js',
+                        './mode-switcher/script.js'
+                    ];
+                    scripts.forEach(src => {
+                        const s = document.createElement('script'); 
+                        s.src = src; 
+                        document.body.appendChild(s);
+                    });
+                }, 100);
+
+              // ==========================================================
+            // 【统一路由接管器】全自动路径匹配引擎
+            // ==========================================================
+            window.navigateToModule = function(moduleName) { 
+                
+                // 1. 定义白名单：包括所有独立页面模块 和 设备切换模式
+                const independentModules = ['categories', 'notice', 'collection', 'about', 'settings', 'together', 'submit', 'home'];
+                // 定义设备列表
+                const deviceModules = ['computer', 'pad', 'phone', 'watch'];
+                
+                let targetPath = '';
+
+                // 2. 智能路径拼接
+                if (independentModules.includes(moduleName)) {
+                    // 如果是独立页面（如分类），去具体的文件夹
+                    const devicePrefix = localStorage.getItem('jasper_mode') || 'computer';
+                    targetPath = `/modular-${devicePrefix}/${moduleName}/index.html`;
+                } else if (deviceModules.includes(moduleName)) {
+                    // 【关键修复】：如果是点击顶部切换器切换设备，强制重定向到对应的 home
+                    targetPath = `/modular-${moduleName}/home/index.html`;
+                } else {
+                    // 未知模块，阻止回退首页
+                    console.warn(`[路由错误] 未知的模块 ${moduleName}，已阻止回退首页。`);
+                    return; 
+                }
+
+                console.log(`[路由] 正在加载: ${targetPath}`);
+                
+                const container = document.getElementById('app-module-container');
+                if (!container) return;
+
+                // 3. 清空并加载提示
+                container.innerHTML = `<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.6); pointer-events:auto;"><i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;"></i> 加载中...</div>`;
+                container.style.pointerEvents = 'auto';
+
+                // 4. 获取 HTML 并注入
+                fetch(targetPath)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        return res.text();
+                    })
+                    .then(html => {
+                        container.innerHTML = html;
+                        
+                        // 5. 动态注入对应的 CSS
+                        const cssPath = targetPath.replace('index.html', 'style.css');
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = cssPath;
+                        link.id = `module-${moduleName}-css`;
+                        document.head.appendChild(link);
+
+                        // 6. 动态注入对应的 JS
+                        const jsPath = targetPath.replace('index.html', 'script.js');
+                        const script = document.createElement('script');
+                        script.src = jsPath;
+                        script.id = `module-${moduleName}-js`;
+                        document.body.appendChild(script);
+                    })
+                    .catch(err => {
+                        console.error("路由加载失败:", err);
+                        container.innerHTML = `
+                            <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:#ffcccc; pointer-events:auto; flex-direction:column; padding:20px; text-align:center;">
+                                <h2 style="margin-bottom:10px; font-size:24px;">⚠️ 模块加载失败 (404)</h2>
+                                <p style="font-size:16px; margin-bottom:5px;">未找到: <strong style="background:rgba(255,0,0,0.2); padding:2px 8px; border-radius:4px;">${targetPath}</strong></p>
+                            </div>
+                        `;
+                    });
+            };
+
+            }); // 这里是缺失的第1个结束大括号（闭合 fetch().then()）
+
+        }); // 这里是缺失的第2个结束大括号（闭合 addEventListener）
+    </script>
+</body>
+</html>
+

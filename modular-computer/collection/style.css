@@ -1,0 +1,25 @@
+.computer-collection-module { padding: 20px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+.page-title { color: #fff; font-weight: 300; font-size: 28px; margin-bottom: 20px; display: flex; align-items: center; }
+.collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; overflow-y: auto; padding-bottom: 20px; }
+
+.collection-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.3s;
+    display: flex; flex-direction: column; gap: 10px; min-height: 140px;
+}
+.collection-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.08); border-color: #4F9CF7; }
+.collection-card h3 { color: #fff; margin: 0; font-size: 18px; }
+.collection-card p { color: rgba(255,255,255,0.6); margin: 0; font-size: 14px; line-height: 1.5; flex: 1; }
+.collection-card .meta { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.3); margin-top: auto; }
+
+.empty-state-collection { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
+
+/* 阅读器 */
+.pc-reader-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.pc-reader-overlay.hidden { display: none; }
+.pc-reader-window { width: 80%; max-width: 900px; height: 80vh; background: rgba(20,24,32,0.95); display: flex; flex-direction: column; border: 1px solid #4F9CF7; overflow: hidden; }
+.pc-reader-header { display: flex; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center; }
+.pc-reader-header .reader-title { color: #fff; font-size: 20px; font-weight: 500; }
+.pc-reader-body { flex: 1; padding: 24px; overflow-y: auto; color: rgba(255,255,255,0.85); line-height: 1.8; }
+.reader-close-btn { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 24px; cursor: pointer; }
+.reader-close-btn:hover { color: #fff; }

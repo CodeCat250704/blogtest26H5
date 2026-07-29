@@ -1,0 +1,37 @@
+<!-- 模块：Win11 风格分类归档页 (三栏布局) -->
+<!-- 文件目录：JASPERBLOG/modular-computer/classification/index.html -->
+<div class="categories-module">
+    
+    <!-- 最顶层：浏览器多标签页栏 -->
+    <div id="global-tab-bar" class="global-tab-bar glass-panel">
+        <!-- 此处将由 JS 动态插入标签页 -->
+    </div>
+
+    <!-- 下方三栏主体容器 -->
+    <div class="win11-layout glass-panel">
+        <!-- 1. 左侧：导航列表 + 搜索 -->
+        <div class="nav-pane">
+            <div class="address-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="搜索文章..." autocomplete="off">
+                <i class="fa-solid fa-xmark" id="clear-search-btn"></i>
+            </div>
+            <div id="category-switch-list" class="nav-tree-list"></div>
+        </div>
+
+        <!-- 2. 中间：缩窄的同级文章列表 -->
+        <div class="content-pane">
+            <div id="article-switch-list" class="pane-list"></div>
+        </div>
+
+        <!-- 3. 右侧：阅读预览区 -->
+        <div class="reader-pane">
+            <div class="reading-content" id="embedded-reader-content">
+                <div class="empty-preview">
+                    <h1>阅读文章区域</h1>
+                    <p>请从左侧选择分类与文章以开始阅读</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

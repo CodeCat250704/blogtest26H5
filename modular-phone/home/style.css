@@ -1,0 +1,60 @@
+/* 手机端主页专属样式 */
+/* 文件目录：JASPERBLOG/modular-phone/home/style.css */
+
+.home-module-phone {
+    display: flex; flex-direction: column; gap: 15px;
+    padding: 15px; box-sizing: border-box; width: 100%; max-width: 600px; margin: 0 auto;
+}
+
+/* 玻璃面板通用 */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px);
+    border: 1px solid #4F9CF7; border-radius: 14px;
+}
+
+/* 1. 顶部模式切换 */
+.mode-switcher {
+    display: flex; justify-content: space-around; padding: 8px 0;
+}
+.mode-tab {
+    padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;
+    color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.2s;
+}
+.mode-tab.active {
+    background: rgba(79, 156, 247, 0.3); color: #ffffff; box-shadow: 0 0 10px rgba(79, 156, 247, 0.1);
+}
+
+/* 2. 轮播图 (适配手机尺寸) */
+.hero-carousel { height: 160px; padding: 0; position: relative; overflow: hidden; }
+.carousel-btn { width: 32px; height: 32px; border: 1px solid #4F9CF7; background: rgba(0,0,0,0.3); border-radius: 50%; color: #fff; position: absolute; top: 50%; transform: translateY(-50%); }
+.carousel-btn.prev { left: 10px; } .carousel-btn.next { right: 10px; }
+.carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; }
+.slide-bg { width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.6) blur(2px); }
+.slide-content-overlay { position: absolute; padding: 0 30px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+
+/* 3. 时间轴核心样式 (图左线右文) */
+.timeline-container { padding: 0; overflow: hidden; }
+.timeline-body { padding: 20px; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+.timeline-item {
+    display: flex; position: relative; padding-left: 20px;
+}
+/* 竖线 */
+.timeline-item::before {
+    content: ''; position: absolute; left: 0; top: 5px; bottom: -20px;
+    width: 2px; background: rgba(255, 255, 255, 0.2);
+}
+.timeline-item:last-child::before { display: none; } /* 最后一个不需要底下线 */
+
+/* 圆点 */
+.timeline-dot {
+    position: absolute; left: -4px; top: 6px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #4F9CF7; border: 2px solid rgba(255,255,255,0.2);
+}
+
+/* 内容 */
+.timeline-content { display: flex; flex-direction: column; gap: 4px; }
+.timeline-date { font-size: 12px; color: rgba(255,255,255,0.5); }
+.timeline-title { font-size: 15px; color: #ffffff; font-weight: 600; line-height: 1.4; }
+.timeline-desc { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; }

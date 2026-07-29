@@ -1,0 +1,9 @@
+.pad-together-module { padding: 16px; height: 100%; overflow-y: auto; max-width: 800px; margin: 0 auto; }
+.pad-page-title { color: #fff; font-size: 20px; margin-bottom: 16px; }
+.pad-together-grid { display: flex; flex-direction: column; gap: 20px; }
+.pad-group-title { color: rgba(255,255,255,0.7); font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 12px; }
+.pad-group-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pad-link-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.04); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+.pad-link-card img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
+.pad-link-card .name { color: #fff; font-size: 15px; font-weight: 500; }
+.pad-link-card .desc { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 2px; }

@@ -1,0 +1,33 @@
+<!-- 模块：主页 (轮播图 + 三列卡片) -->
+<!-- 文件目录：JASPERBLOG/modular-computer/home/index.html -->
+<div class="home-module">
+    <!-- 轮播图区域 (带悬浮切歌动画) -->
+    <div class="hero-carousel glass-panel" id="heroCarousel">
+        <button class="carousel-btn prev" id="carouselPrev"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="carousel-track-container">
+            <ul class="carousel-track" id="carouselTrack"></ul>
+        </div>
+        <button class="carousel-btn next" id="carouselNext"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+    </div>
+
+    <!-- 三列卡片布局 (公告、历史、音乐) -->
+    <div class="three-col-grid">
+        <div class="card glass-panel">
+            <div class="card-header">公告板</div>
+            <div class="card-body" id="announcementList"></div>
+        </div>
+        <div class="card glass-panel">
+            <div class="card-header">历史发布</div>
+            <div class="card-body">
+                <ul id="historyList" style="list-style: none; line-height: 1.8; margin: 0; padding: 0;"></ul>
+            </div>
+        </div>
+        <div class="card glass-panel">
+            <div class="card-header">音乐列表</div>
+            <div class="card-body" id="musicListContainer">
+                <!-- 播放器由 JS 在此处动态注入 -->
+            </div>
+        </div>
+    </div>
+</div>

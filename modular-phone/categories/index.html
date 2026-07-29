@@ -1,0 +1,41 @@
+<!-- 手机端分类页：横向滑动 Tab + 卡片列表 + 悬浮阅读器 -->
+<!-- 文件目录：JASPERBLOG/modular-phone/categories/index.html -->
+<div class="phone-categories-module">
+
+    <!-- 顶部栏：分类标签 (可滑动) + 搜索 -->
+    <div class="phone-top-section glass-panel">
+        <div class="phone-tab-scroll-wrapper">
+            <div id="phone-category-tabs" class="phone-tab-container">
+                <!-- 标签将由 JS 动态生成 -->
+            </div>
+        </div>
+        <div class="phone-search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="phone-search-input" placeholder="搜索文章标题..." autocomplete="off">
+            <i class="fa-solid fa-xmark" id="phone-clear-search"></i>
+        </div>
+    </div>
+
+    <!-- 文章列表卡片区 -->
+    <div class="phone-article-list" id="phone-article-list-container">
+        <!-- 列表卡片由 JS 动态生成 -->
+        <div class="phone-empty-state">
+            <i class="fa-regular fa-folder-open" style="font-size: 40px; opacity: 0.3; margin-bottom: 15px;"></i>
+            <p>请选择上方分类以查看内容</p>
+        </div>
+    </div>
+
+    <!-- 底部悬浮阅读弹出层 (默认隐藏) -->
+    <div id="phone-reader-overlay" class="phone-reader-overlay hidden">
+        <div class="phone-reader-drawer glass-panel">
+            <div class="phone-reader-header">
+                <div class="reader-title" id="phone-reader-title">文章标题</div>
+                <button id="phone-close-reader" class="reader-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="phone-reader-body" id="phone-reader-body">
+                <div class="loading-tip">正在加载内容...</div>
+            </div>
+        </div>
+    </div>
+
+</div>

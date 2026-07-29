@@ -1,0 +1,20 @@
+/* 平板设置页 - 适配三色系统 */
+.pad-settings-module { padding: 24px; height: 100%; overflow-y: auto; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.pad-settings-header-area { display: flex; align-items: center; gap: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+.pad-settings-header-area .icon-wrap { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-contrast); }
+.pad-settings-header-area h1 { color: var(--text-main); font-size: 24px; font-weight: 600; margin: 0; }
+.pad-settings-header-area .subtitle { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+.pad-settings-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; backdrop-filter: blur(16px); box-shadow: 0 8px 30px var(--shadow-color); overflow: hidden; }
+.pad-card-header { padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 15px; font-weight: 500; }
+.pad-card-header i { color: var(--text-contrast); font-size: 17px; }
+.pad-card-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.pad-setting-item { display: flex; flex-direction: column; gap: 12px; }
+.pad-setting-item .label { color: var(--text-main); font-size: 14px; font-weight: 500; }
+.pad-theme-group { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.pad-theme-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 24px; border-radius: 40px; cursor: pointer; transition: 0.25s; background: var(--bg-taskbar); border: 1px solid var(--border-color); color: var(--text-muted); font-size: 14px; font-weight: 500; min-width: 70px; }
+.pad-theme-btn:hover { transform: translateY(-3px); border-color: var(--text-main); color: var(--text-main); box-shadow: 0 8px 20px var(--shadow-color); }
+.pad-theme-btn.active { background: rgba(var(--text-contrast), 0.15); border: 1px solid var(--text-contrast); color: var(--text-contrast); box-shadow: 0 0 20px rgba(var(--text-contrast), 0.1); }
+.pad-theme-btn i, .pad-theme-btn.active i { color: var(--text-contrast); }
+.pad-settings-module::-webkit-scrollbar { width: 6px; }
+.pad-settings-module::-webkit-scrollbar-track { background: transparent; }
+.pad-settings-module::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }

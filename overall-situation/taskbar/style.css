@@ -1,0 +1,170 @@
+/* 任务栏外部样式表：完美还原排版 */
+/* 文件目录：JASPERBLOG/overall-situation/taskbar/style.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* --- 1. 任务栏主容器 --- */
+.taskbar-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 92%;
+    max-width: 1100px;
+    height: 74px;
+    border-radius: 34px;
+    
+    background: rgba(12, 16, 24, 0.55);
+    backdrop-filter: blur(45px);
+    -webkit-backdrop-filter: blur(45px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    box-sizing: border-box;
+    z-index: 9999;
+    user-select: none;
+}
+
+/* --- 2. 内部区块布局 --- */
+.taskbar-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+    min-width: 80px;
+    padding-right: 10px;
+}
+
+.taskbar-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 18px;
+    flex: 1;
+    justify-content: center; /* 核心：让图标在中间居中 */
+}
+
+.taskbar-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+    padding-left: 12px;
+}
+
+/* --- 3. 时间排版 --- */
+.time-large {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.time-small {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+/* --- 4. 按钮排版 (图标大、文字在下面) --- */
+.taskbar-item {
+    display: flex;
+    flex-direction: column; /* 垂直排列图标和文字 */
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    
+    padding: 4px 10px;
+    min-width: 44px;
+    height: auto;
+    
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    list-style: none;
+    border-radius: 12px;
+    text-decoration: none;
+}
+.taskbar-item i {
+    font-size: 22px; /* 图标放大 */
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.85);
+}
+.taskbar-item span {
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+/* --- 5. 按钮交互效果 --- */
+.taskbar-item:hover {
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+.taskbar-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* --- 6. 纯图标按钮 (猫和盒子) --- */
+.taskbar-item.btn-icon {
+    padding: 4px 10px;
+    min-width: 44px;
+}
+
+/* --- 7. 音量控制 --- */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.volume-control i {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+}
+.volume-track {
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    position: relative;
+}
+#global-volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    margin: 0;
+    outline: none;
+}
+#global-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}

@@ -1,0 +1,16 @@
+.pc-together-module { padding: 20px; box-sizing: border-box; height: 100%; overflow-y: auto; }
+.pc-page-title { color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+.pc-together-grid { display: flex; flex-direction: column; gap: 24px; padding-bottom: 20px; }
+.pc-group-title { color: rgba(255,255,255,0.7); font-size: 20px; margin: 10px 0 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+.pc-group-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.pc-link-card {
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06);
+    padding: 16px; border-radius: 12px; transition: 0.3s; cursor: pointer;
+}
+.pc-link-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.08); border-color: #4F9CF7; }
+.pc-link-card img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: #333; }
+.pc-link-card .info { display: flex; flex-direction: column; overflow: hidden; }
+.pc-link-card .info .name { color: #fff; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-link-card .info .desc { color: rgba(255,255,255,0.5); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }

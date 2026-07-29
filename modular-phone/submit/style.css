@@ -1,0 +1,22 @@
+/* 手机端投稿重写 */
+.phone-submit-module { height: 100%; overflow-y: auto; padding: 10px; max-width: 480px; margin: 0 auto; }
+.phone-submit-header { padding: 14px 16px; margin-bottom: 12px; border: 1px solid rgba(79,156,247,0.3); border-radius: 12px; }
+.phone-submit-header h1 { color: #fff; font-size: 18px; margin: 0 0 4px 0; display: flex; gap: 8px; align-items: center; }
+.phone-submit-header p { color: rgba(255,255,255,0.6); font-size: 12px; margin: 0; line-height: 1.4; }
+
+.phone-submit-grid { display: grid; grid-template-columns: 1fr; gap: 12px; padding-bottom: 20px; }
+.submit-card { padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; display: flex; flex-direction: column; background: rgba(255,255,255,0.02); }
+.card-header { padding: 10px 14px; background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 8px; color: #fff; font-size: 14px; }
+.card-header i { color: #4F9CF7; }
+.card-body { padding: 12px 14px; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.6; min-height: 80px; }
+
+/* 以下规则复用平板端 */
+.rules-list { margin: 0; padding-left: 16px; }
+.rules-list li { margin-bottom: 8px; }
+.rules-list strong { color: #fff; }
+.rules-blockquote { background: rgba(79,156,247,0.05); border-left: 3px solid #4F9CF7; padding: 6px 10px; margin: 8px 0; color: rgba(255,255,255,0.6); font-size: 12px; }
+.method-list { margin: 0; padding-left: 16px; }
+.mail-box { background: #ffffff; border-radius: 6px; padding: 14px; color: #333; font-family: monospace; font-size: 12px; line-height: 1.7; white-space: pre-wrap; }
+.email-btn-wrapper { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; }
+.email-btn { padding: 4px 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; color: rgba(255,255,255,0.85); font-size: 11px; text-decoration: none; transition: 0.2s; }
+.email-btn:hover { background: rgba(79,156,247,0.15); border-color: #4F9CF7; color: #fff; }

@@ -1,0 +1,8 @@
+.phone-together-module { padding: 12px; height: 100%; overflow-y: auto; max-width: 480px; margin: 0 auto; }
+.phone-page-title { color: #fff; font-size: 18px; margin-bottom: 16px; }
+.phone-together-list { display: flex; flex-direction: column; gap: 16px; }
+.phone-group-title { color: rgba(255,255,255,0.6); font-size: 14px; border-left: 2px solid #4F9CF7; padding-left: 8px; margin: 8px 0 12px 0; }
+.phone-link-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+.phone-link-card img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
+.phone-link-card .name { color: #fff; font-size: 15px; font-weight: 500; }
+.phone-link-card .desc { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 2px; }

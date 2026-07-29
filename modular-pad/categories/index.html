@@ -1,0 +1,47 @@
+<!-- 平板分类页：左列分类，右列卡片网格 -->
+<!-- 文件目录：JASPERBLOG/modular-pad/categories/index.html -->
+<div class="pad-categories-module">
+    
+    <!-- 1. 左侧分类导航 -->
+    <div class="pad-nav-side glass-panel">
+        <!-- 顶部滑块 Tab (紧凑型) -->
+        <div class="pad-tab-scroll-wrapper">
+            <div id="pad-category-tabs" class="pad-tab-container">
+                <!-- 分类由 JS 动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 垂直搜索框 -->
+        <div class="pad-search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="pad-search-input" placeholder="搜索..." autocomplete="off">
+        </div>
+    </div>
+
+    <!-- 2. 右侧内容网格 -->
+    <div class="pad-content-side">
+        <!-- 双列网格 -->
+        <div class="pad-article-grid" id="pad-article-grid-container">
+            <div class="pad-empty-state">
+                <i class="fa-regular fa-folder-open" style="font-size: 48px; opacity: 0.3; margin-bottom: 15px;"></i>
+                <p>请选择分类以加载文章</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 右侧半屏阅读器 (默认隐藏) -->
+    <div id="pad-reader-overlay" class="pad-reader-overlay hidden">
+        <div class="pad-reader-panel glass-panel">
+            <div class="pad-reader-header">
+                <div class="reader-title" id="pad-reader-title">文章标题</div>
+                <div class="reader-controls">
+                    <button id="pad-close-reader" class="reader-close-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="pad-reader-body" id="pad-reader-body">
+                <div class="loading-tip">正在加载 Markdown...</div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,36 @@
+<!-- 手表端分类页：胶囊标签 + 极简纵向列表 -->
+<!-- 文件目录：JASPERBLOG/modular-watch/categories/index.html -->
+<div class="watch-categories-module">
+
+    <!-- 顶部胶囊分类切换栏 -->
+    <div class="watch-top-section">
+        <div class="watch-tab-scroll-wrapper">
+            <div id="watch-category-tabs" class="watch-tab-container">
+                <!-- 标签由 JS 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 文章极简列表区 -->
+    <div class="watch-article-list" id="watch-article-list-container">
+        <!-- 列表项由 JS 动态生成 -->
+        <div class="watch-empty-state">
+            <i class="fa-regular fa-folder-open"></i>
+            <p style="font-size: 12px;">请选择分类</p>
+        </div>
+    </div>
+
+    <!-- 底部全屏阅读弹出层 (默认隐藏) -->
+    <div id="watch-reader-overlay" class="watch-reader-overlay hidden">
+        <div class="watch-reader-fullscreen glass-panel">
+            <div class="watch-reader-header">
+                <div class="reader-title" id="watch-reader-title">文章标题</div>
+                <button id="watch-close-reader" class="reader-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="watch-reader-body" id="watch-reader-body">
+                <div class="loading-tip">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+</div>

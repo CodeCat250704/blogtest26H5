@@ -1,0 +1,33 @@
+{
+  "announcements": ["你好，欢迎来到我的博客"],
+  "posts": [
+    { 
+      "title": "Apple液态玻璃，教程来喽", 
+      "subtitle": "关于Apple液态玻璃效果的web前端实现", 
+      "date": "2026-07-24", 
+      "category": "前端开发", 
+      "mdPath": "/data-base/article/1/content.md",
+      "cover": "/data-base/article/1/cover.jpg"
+    },
+    { 
+      "title": "关于鸿蒙的看法（一）", 
+      "subtitle": "与Windows，Mac的软件对比", 
+      "date": "2026-07-26", 
+      "category": "鸿蒙", 
+      "mdPath": "/data-base/article/2/content.md",
+      "cover": "/data-base/article/2/cover.jpg"
+    }  
+  ],
+
+  "music": [
+    "The King.mp3",
+    "游京.mp3",
+    "Call Me Now.mp3",
+    "Go Again.aac",
+    "Drown (feat. Clinton Kane).mp3",
+    "Move Your Body (Alan Walker Remix).mp3",
+    "TIRED OF PROBLEMS (Explicit) - NUEKI&TOLCHONOV&Glichery.aac"
+
+
+  ]
+}

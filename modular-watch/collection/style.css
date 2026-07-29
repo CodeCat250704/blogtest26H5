@@ -1,0 +1,15 @@
+.watch-collection-module { display: flex; flex-direction: column; height: 100%; padding: 8px; max-width: 320px; margin: 0 auto; box-sizing: border-box; }
+.watch-collection-header { display: flex; justify-content: space-between; padding: 8px 4px 12px 4px; color: #fff; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.watch-collection-header span { display: flex; align-items: center; gap: 6px; }
+
+.watch-collection-list { flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; padding-top: 8px; }
+.watch-collection-item { display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; cursor: pointer; }
+.watch-collection-item .title { font-size: 13px; color: #fff; max-width: 80%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.watch-collection-item .date { font-size: 10px; color: rgba(255,255,255,0.3); }
+
+.watch-reader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999; display: flex; justify-content: center; align-items: flex-end; }
+.watch-reader-overlay.hidden { display: none; }
+.watch-reader-fullscreen { width: 100%; max-width: 320px; height: 90%; border-radius: 16px 16px 0 0; background: rgba(12,16,24,0.8); backdrop-filter: blur(10px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #4F9CF7; }
+.watch-reader-header { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+.watch-reader-header .reader-title { color: #fff; font-size: 14px; font-weight: 500; }
+.watch-reader-body { flex: 1; padding: 16px; overflow-y: auto; color: rgba(255,255,255,0.8); font-size: 13px; line-height: 1.6; }

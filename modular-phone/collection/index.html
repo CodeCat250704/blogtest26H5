@@ -1,0 +1,29 @@
+<!-- 手机端收藏页：双列瀑布流 + 底部抽屉阅读 -->
+<!-- 文件目录：JASPERBLOG/modular-phone/collection/index.html -->
+<div class="phone-collection-module">
+    
+    <div class="phone-collection-header">
+        <h2><i class="fa-regular fa-star"></i> 我的收藏</h2>
+        <span id="phone-collection-count" class="count-badge">0 篇</span>
+    </div>
+
+    <!-- 文章双列卡片网格 -->
+    <div class="phone-collection-grid" id="phone-collection-grid">
+        <!-- 卡片由 JS 动态渲染 -->
+        <div class="phone-empty-state">
+            <i class="fa-regular fa-star" style="font-size: 48px; opacity: 0.2; margin-bottom: 16px;"></i>
+            <p>还没有收藏文章</p>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.3);">去分类页寻找喜欢的内容吧</p>
+        </div>
+    </div>
+
+    <!-- 底部抽屉式阅读器 (默认隐藏) -->
+    <div id="phone-collection-reader" class="phone-bottom-sheet hidden">
+        <div class="sheet-drag-handle"></div>
+        <div class="sheet-header">
+            <div id="phone-reader-title" class="sheet-title">加载中...</div>
+            <button id="phone-close-reader" class="sheet-close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="phone-reader-body" class="sheet-body">正在加载文章...</div>
+    </div>
+</div>

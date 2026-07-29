@@ -1,0 +1,64 @@
+/* 电脑端通知样式 (双栏流式) */
+.pc-notice-module {
+    display: flex; flex-direction: column; height: 100%; padding: 16px; box-sizing: border-box;
+    max-width: 1200px; margin: 0 auto; gap: 12px;
+}
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px;
+}
+
+/* 顶部导航 */
+.pc-notice-header-bar {
+    flex-shrink: 0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
+}
+.header-left { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 18px; font-weight: 600; }
+.total-badge { background: rgba(79, 156, 247, 0.2); color: #4F9CF7; padding: 2px 10px; border-radius: 12px; font-size: 14px; }
+.btn-ghost { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 14px; cursor: pointer; transition: 0.2s; }
+.btn-ghost:hover { color: #fff; }
+
+/* 主体双栏 */
+.pc-notice-body { flex: 1; display: flex; gap: 12px; min-height: 0; }
+
+/* 左侧边栏 (占 18%) */
+.pc-notice-sidebar {
+    width: 18%; min-width: 160px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+}
+.sidebar-title { color: rgba(255,255,255,0.4); font-size: 12px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+.filter-list { display: flex; flex-direction: column; gap: 4px; }
+.filter-btn {
+    display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: 0.2s;
+    color: rgba(255,255,255,0.6); font-size: 14px; border: 1px solid transparent; background: transparent;
+}
+.filter-btn i { width: 18px; text-align: center; font-size: 14px; }
+.filter-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.filter-btn.active { background: rgba(79, 156, 247, 0.15); border-color: rgba(79, 156, 247, 0.3); color: #4F9CF7; }
+.filter-btn .f-count { margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* 右侧消息流 (占 82%) */
+.pc-notice-feed { flex: 1; padding: 16px 16px 16px 0; overflow-y: hidden; display: flex; flex-direction: column; }
+.feed-list { flex: 1; overflow-y: auto; padding-right: 8px; display: flex; flex-direction: column; gap: 12px; }
+.feed-list::-webkit-scrollbar { width: 4px; }
+.feed-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+.pc-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.4); }
+.pc-empty-state h3 { color: rgba(255,255,255,0.5); margin: 0 0 8px 0; }
+
+/* 电脑端通知卡片 */
+.pc-notice-item {
+    background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px; padding: 16px 20px; display: flex; gap: 16px; transition: 0.2s; align-items: flex-start;
+}
+.pc-notice-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+.pc-notice-item .ni-icon {
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 18px; margin-top: 2px;
+}
+.ni-icon.info { background: rgba(79, 156, 247, 0.15); color: #4F9CF7; }
+.ni-icon.success { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+.ni-icon.warning { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
+
+.pc-notice-item .ni-content { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.pc-notice-item .ni-content h4 { color: #fff; font-size: 16px; margin: 0; font-weight: 500; }
+.pc-notice-item .ni-content p { color: rgba(255,255,255,0.65); font-size: 14px; margin: 0; line-height: 1.5; }
+.pc-notice-item .ni-content .date { color: rgba(255,255,255,0.35); font-size: 12px; }

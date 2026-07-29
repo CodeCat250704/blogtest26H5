@@ -1,0 +1,52 @@
+/* 平板端收藏专属样式 */
+.pad-collection-module {
+    display: flex; flex-direction: column; height: 100%; padding: 16px; box-sizing: border-box;
+    max-width: 800px; margin: 0 auto;
+}
+.pad-collection-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.pad-collection-header h2 { color: #fff; font-size: 22px; display: flex; align-items: center; gap: 12px; margin: 0; }
+.pad-count-badge { background: rgba(255,255,255,0.08); padding: 4px 14px; border-radius: 14px; font-size: 13px; color: rgba(255,255,255,0.6); }
+
+/* 三列卡片网格 */
+.pad-collection-grid {
+    flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 16px 0 20px 0;
+}
+.pad-collection-grid::-webkit-scrollbar { width: 4px; }
+.pad-collection-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+.pad-empty-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60%; color: rgba(255,255,255,0.4); }
+
+.pad-card-item {
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px; padding: 18px; cursor: pointer; transition: all 0.3s;
+    display: flex; flex-direction: column; min-height: 120px;
+}
+.pad-card-item:hover { transform: translateY(-4px); background: rgba(255,255,255,0.08); border-color: #4F9CF7; }
+.pad-card-item h4 { color: #fff; font-size: 16px; margin: 0 0 6px 0; }
+.pad-card-item p { color: rgba(255,255,255,0.5); font-size: 13px; margin: 0; flex: 1; }
+.pad-card-item .meta { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 10px; }
+
+/* 右侧侧滑阅读器 */
+.pad-side-drawer {
+    position: fixed; top: 80px; right: 0; width: 50%; height: calc(100vh - 150px);
+    z-index: 9999; display: flex; justify-content: flex-end;
+    transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+}
+.pad-side-drawer.hidden { transform: translateX(100%); }
+.pad-side-drawer:not(.hidden) { transform: translateX(0); }
+
+.pad-drawer-container {
+    width: 100%; height: 100%; background: rgba(18, 22, 30, 0.92); backdrop-filter: blur(20px);
+    border: 1px solid #4F9CF7; border-radius: 16px 0 0 16px;
+    display: flex; flex-direction: column; overflow: hidden;
+}
+.pad-drawer-header {
+    display: flex; justify-content: space-between; padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; align-items: center;
+}
+.drawer-title { color: #fff; font-size: 18px; font-weight: 600; }
+.drawer-close-btn { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 22px; cursor: pointer; }
+.drawer-body { flex: 1; padding: 20px; overflow-y: auto; color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.8; }

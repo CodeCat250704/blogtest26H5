@@ -1,0 +1,123 @@
+/* 手表端投稿样式 (单列垂直紧凑流) */
+.watch-submit-module {
+    height: 100%;
+    overflow-y: auto;
+    padding: 8px;
+    box-sizing: border-box;
+    max-width: 360px;
+    margin: 0 auto;
+    background: transparent;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(79, 156, 247, 0.3);
+    border-radius: 12px;
+}
+
+.watch-header-section {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+.watch-header-section h1 {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.watch-header-section p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.watch-submit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+/* 手表端的卡片结构 */
+.watch-submit-card {
+    padding: 0;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+}
+.watch-card-header {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}
+.watch-card-header i {
+    color: #4F9CF7;
+    font-size: 14px;
+}
+
+.watch-card-body {
+    padding: 10px 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* 列表样式 */
+.watch-rules-list { margin: 0; padding-left: 14px; }
+.watch-rules-list li { margin-bottom: 6px; }
+.watch-rules-list strong { color: #fff; }
+.watch-rules-blockquote {
+    background: rgba(79, 156, 247, 0.05);
+    border-left: 2px solid #4F9CF7;
+    padding: 4px 8px;
+    margin: 6px 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+}
+
+.watch-method-list { margin: 0; padding-left: 14px; }
+.watch-method-list li { margin-bottom: 4px; }
+
+/* 邮件白框 */
+.watch-mail-box {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #333333;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* 按钮胶囊 */
+.watch-email-btn-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: 2px;
+}
+.watch-email-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    text-decoration: none;
+}
+.watch-email-btn i { color: #4F9CF7; font-size: 11px; }

@@ -1,0 +1,99 @@
+/* ==========================================================
+ * 三主题切换引擎 - 极简稳定版
+ * ========================================================== */
+
+/* 1. 默认：亮色模式 */
+:root {
+    --text-main: #222222;
+    --text-muted: rgba(50, 50, 50, 0.7);
+    --text-light: rgba(50, 50, 50, 0.5);
+    --text-contrast: #4F9CF7;
+    --bg-card: rgba(255, 255, 255, 0.30);
+    --bg-taskbar: rgba(255, 255, 255, 0.60);
+    --bg-overlay: rgba(255, 255, 255, 0.15);
+    --border-color: rgba(79, 156, 247, 0.5);
+    --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+/* 2. 暗色模式 */
+body.dark-mode {
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.7);
+    --text-light: rgba(255, 255, 255, 0.4);
+    --text-contrast: #5aa9f5;
+    --bg-card: rgba(255, 255, 255, 0.05);
+    --bg-taskbar: rgba(16, 20, 30, 0.65);
+    --bg-overlay: rgba(0, 0, 0, 0.55);
+    --border-color: rgba(90, 169, 245, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.6);
+}
+
+/* 3. 黄昏模式 */
+body.sunset-mode {
+    --text-main: #ffe6cc;
+    --text-muted: rgba(255, 230, 204, 0.8);
+    --text-light: rgba(255, 230, 204, 0.5);
+    --text-contrast: #f8b195;
+    --bg-card: rgba(255, 180, 160, 0.1);
+    --bg-taskbar: rgba(30, 20, 40, 0.6);
+    --bg-overlay: linear-gradient(135deg, rgba(100, 30, 60, 0.6) 0%, rgba(200, 80, 50, 0.4) 100%);
+    --border-color: rgba(248, 177, 149, 0.4);
+    --shadow-color: rgba(80, 20, 30, 0.5);
+}
+
+/* 基础重置 */
+body, html {
+    margin: 0; padding: 0; overflow: hidden;
+    font-family: -apple-system, sans-serif;
+    color: var(--text-main);
+    background-color: #f0f4f8;
+}
+#root, #app-module-container { color: var(--text-main); }
+
+/* 壁纸与动态蒙层 */
+.desktop-wallpaper {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('./background.png'); 
+    background-size: cover; background-position: center; z-index: 0;
+}
+.desktop-wallpaper::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-overlay); pointer-events: none; z-index: 1;
+}
+
+/* 全组件通用变量 */
+.glass-panel, .settings-card, .submit-card, .category-btn, .article-item, .about-card, .theme-btn {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-main) !important;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    transition: all 0.3s ease;
+}
+
+/* 文字全面接管 */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li, i, button, input, textarea, 
+.taskbar-item, .t-item, .mode-btn, .topbar-left, .topbar-right {
+    color: var(--text-main) !important;
+}
+.text-muted, .desc, .subtitle, input::placeholder {
+    color: var(--text-muted) !important;
+}
+.brand-text { color: var(--text-contrast) !important; }
+
+/* 交互反馈 */
+.t-item:hover, .taskbar-item:hover, .mode-btn:hover, .theme-btn:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    transform: translateY(-2px);
+}
+.t-item.active, .taskbar-item.active, .mode-btn.active, .theme-btn.active {
+    background: rgba(var(--text-contrast), 0.15) !important;
+    border: 1px solid var(--text-contrast) !important;
+    color: var(--text-contrast) !important;
+}
+#taskbar-core, #jasper-bottom-bar, #global-mode-switcher .switcher-panel {
+    background: var(--bg-taskbar) !important;
+    border: 1px solid var(--border-color) !important;
+    backdrop-filter: blur(25px);
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "group": "友情链接",
+    "list": [
+      {
+        "name": "MC李大爷",
+        "desc": "资深老友，前端全能选手",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=MC"
+      },
+      {
+        "name": "Hwyer",
+        "desc": "摄影大师，极简主义践行者",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Hwyer"
+      },
+      {
+        "name": "Greenyc",
+        "desc": "该网站照片的重要提供者",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Greenyc"
+      },
+      {
+        "name": "Linksphotography",
+        "desc": "该网站的照片来源者",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Links"
+      }
+    ]
+  },
+  {
+    "group": "网站",
+    "list": [
+      {
+        "name": "BiliBili",
+        "desc": "中国最好的视频平台",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=BiliBili"
+      },
+      {
+        "name": "简书",
+        "desc": "不错的写博客网站",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=JianShu"
+      },
+      {
+        "name": "DeepSeek",
+        "desc": "国内领先的 AI 大模型",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=DeepSeek"
+      }
+    ]
+  }
+]

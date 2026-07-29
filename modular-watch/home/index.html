@@ -1,0 +1,38 @@
+<!-- 模块：手表端主页 (极窄垂直流式) -->
+<!-- 文件目录：JASPERBLOG/modular-watch/home/index.html -->
+<div class="home-module-watch">
+    
+    <!-- 1. 轮播条 (横向超薄滑动) -->
+    <div class="watch-carousel glass-panel" id="watchCarousel">
+        <div class="carousel-track-container">
+            <ul class="carousel-track" id="carouselTrack"></ul>
+        </div>
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+    </div>
+
+    <!-- 2. 最新发布 -->
+    <div class="watch-section glass-panel">
+        <div class="watch-section-header">最新发布</div>
+        <ul id="watchHistoryList" class="watch-list"></ul>
+    </div>
+
+    <!-- 3. 公告 -->
+    <div class="watch-section glass-panel">
+        <div class="watch-section-header">公告板</div>
+        <div id="watchAnnouncement" class="watch-text-content"></div>
+    </div>
+
+    <!-- 4. 音乐播放条 -->
+    <div class="watch-section glass-panel" style="padding: 12px;">
+        <div class="watch-section-header" style="margin-bottom: 8px;">
+            <span>播放器</span>
+            <span id="watchSongName" style="font-size: 10px; color: rgba(255,255,255,0.5);">未播放</span>
+        </div>
+        <div class="watch-player-controls">
+            <button class="watch-ctrl-btn" id="watchPrev"><i class="fa-solid fa-backward-step"></i></button>
+            <button class="watch-ctrl-btn main-play" id="watchPlay"><i class="fa-solid fa-play"></i></button>
+            <button class="watch-ctrl-btn" id="watchNext"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+    </div>
+
+</div>

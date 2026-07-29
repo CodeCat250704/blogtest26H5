@@ -1,0 +1,8 @@
+.watch-about-module { height: 100%; overflow-y: auto; padding: 12px; max-width: 360px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; text-align: center; }
+.watch-hero h1 { color: #fff; font-size: 24px; font-weight: 600; margin: 10px 0 2px 0; }
+.watch-hero p { color: rgba(255,255,255,0.4); font-size: 12px; margin: 0; }
+.glass-panel { background: rgba(255,255,255,0.04); border: 1px solid rgba(79,156,247,0.3); border-radius: 12px; padding: 10px 12px; backdrop-filter: blur(10px); }
+.watch-info-item { display: flex; justify-content: space-between; align-items: center; }
+.watch-info-item .label { color: rgba(255,255,255,0.6); font-size: 11px; }
+.watch-info-item .value { color: #fff; font-size: 13px; font-weight: 500; }
+.watch-footer { color: rgba(255,255,255,0.2); font-size: 10px; margin-top: 6px; }

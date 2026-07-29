@@ -1,0 +1,16 @@
+/* 手机设置页 - 适配三色系统 */
+.phone-settings-module { padding: 16px; height: 100%; overflow-y: auto; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.phone-settings-header-area { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+.phone-settings-header-area .icon-wrap { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-color); font-size: 18px; color: var(--text-contrast); }
+.phone-settings-header-area h1 { color: var(--text-main); font-size: 20px; font-weight: 600; margin: 0; }
+.phone-settings-header-area .subtitle { color: var(--text-muted); font-size: 12px; }
+.phone-settings-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; backdrop-filter: blur(16px); box-shadow: 0 8px 30px var(--shadow-color); overflow: hidden; }
+.phone-card-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 14px; font-weight: 500; }
+.phone-card-header i { color: var(--text-contrast); font-size: 16px; }
+.phone-card-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.phone-setting-item .label { color: var(--text-main); font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+.phone-theme-group { display: flex; gap: 10px; flex-wrap: wrap; }
+.phone-theme-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 20px; border-radius: 30px; cursor: pointer; transition: 0.25s; background: var(--bg-taskbar); border: 1px solid var(--border-color); color: var(--text-muted); font-size: 13px; min-width: 60px; }
+.phone-theme-btn:hover { transform: translateY(-2px); border-color: var(--text-main); color: var(--text-main); }
+.phone-theme-btn.active { background: rgba(var(--text-contrast), 0.15); border: 1px solid var(--text-contrast); color: var(--text-contrast); box-shadow: 0 0 15px rgba(var(--text-contrast), 0.1); }
+.phone-theme-btn i, .phone-theme-btn.active i { color: var(--text-contrast); }

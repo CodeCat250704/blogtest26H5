@@ -1,0 +1,26 @@
+<!-- 电脑端收藏页：大图卡片 + 无侧边栏阅读 -->
+<!-- 文件目录：JASPERBLOG/modular-computer/collection/index.html -->
+<div class="computer-collection-module">
+    <h1 class="page-title"><i class="fa-regular fa-star" style="margin-right: 12px;"></i>我的收藏</h1>
+    
+    <!-- 全屏三列卡片网格 -->
+    <div class="collection-grid" id="computer-collection-grid">
+        <!-- 卡片由 JS 渲染 -->
+        <div class="empty-state-collection">
+            <i class="fa-regular fa-star" style="font-size: 48px; opacity: 0.2; display: block; margin-bottom: 16px;"></i>
+            <h2>暂无收藏</h2>
+            <p>去文章列表中发现感兴趣的精彩内容并收藏吧</p>
+        </div>
+    </div>
+
+    <!-- 点击卡片弹出的全尺寸阅读器 (使用和分类页相同的逻辑) -->
+    <div id="pc-reader-overlay" class="pc-reader-overlay hidden">
+        <div class="pc-reader-window glass-panel">
+            <div class="pc-reader-header">
+                <div class="reader-title" id="pc-reader-title">文章标题</div>
+                <button id="pc-close-reader" class="reader-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="pc-reader-body" id="pc-reader-body">加载中...</div>
+        </div>
+    </div>
+</div>

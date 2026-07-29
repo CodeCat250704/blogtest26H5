@@ -1,0 +1,8 @@
+.watch-together-module { padding: 8px; height: 100%; overflow-y: auto; max-width: 320px; margin: 0 auto; }
+.watch-header { color: #fff; font-size: 15px; padding: 8px 4px 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; display: flex; gap: 6px; align-items: center; }
+.watch-together-list { display: flex; flex-direction: column; gap: 8px; }
+.watch-group-title { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 8px; }
+.watch-link-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px; }
+.watch-link-item img { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
+.watch-link-item .name { color: #fff; font-size: 13px; }
+.watch-link-item .desc { color: rgba(255,255,255,0.4); font-size: 10px; }

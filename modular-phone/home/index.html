@@ -1,0 +1,41 @@
+<!-- 手机端主页：包含轮播图、模式切换、时间轴 -->
+<!-- 文件目录：JASPERBLOG/modular-phone/home/index.html -->
+<div class="home-module-phone">
+    
+    <!-- 【新增】四种模式切换区域 -->
+    <div class="mode-switcher glass-panel">
+        <div class="mode-tab active" data-mode="recommend">推荐</div>
+        <div class="mode-tab" data-mode="latest">最新</div>
+        <div class="mode-tab" data-mode="hot">热门</div>
+        <div class="mode-tab" data-mode="timeline">时间轴</div>
+    </div>
+
+    <!-- 轮播图区域 (复用 computer 的 HTML 结构，类名相同) -->
+    <div class="hero-carousel glass-panel" id="heroCarousel">
+        <button class="carousel-btn prev" id="carouselPrev"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="carousel-track-container">
+            <ul class="carousel-track" id="carouselTrack"></ul>
+        </div>
+        <button class="carousel-btn next" id="carouselNext"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+    </div>
+
+    <!-- 【核心改造】时间轴列表 (整合历史发布与公告) -->
+    <div class="timeline-container glass-panel">
+        <div class="card-header">动态时间轴</div>
+        <div class="timeline-body" id="timelineList">
+            <!-- 时间轴条目由 JS 动态渲染 -->
+            <!-- 模板示例：
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">7月29日</div>
+                    <div class="timeline-title">公告：系统更新通知</div>
+                    <div class="timeline-desc">这是一个测试公告...</div>
+                </div>
+            </div>
+            -->
+        </div>
+    </div>
+
+</div>
