@@ -1,5 +1,5 @@
 /* ==========================================================
- * 顶部悬浮胶囊专属样式 - 与任务栏同款设计
+ * 顶部悬浮胶囊
  * 文件目录：JASPERBLOG/mode-switcher/style.css
  * ========================================================== */
 
@@ -7,12 +7,13 @@
 #global-mode-switcher {
     pointer-events: none;
     position: fixed;
-    top: 16px;
+    top: 0px;
     left: 0;
     width: 100vw;
     z-index: 99999;
     display: flex;
     justify-content: center; /* 让胶囊在屏幕正中 */
+    background: transparent;
 }
 
 /* 2. 胶囊核心实体 (完全替代旧的 HTML 内联样式) */
@@ -21,54 +22,51 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 4px;
-    padding: 6px 6px;
-    border-radius: 40px;
+    gap: 6px;
+    padding: 10px 6px;
+    border-radius: 10px;
     
     /* 透亮毛玻璃，完美适配暗色/亮色/黄昏 */
-    background: var(--bg-taskbar);
-    backdrop-filter: blur(35px) saturate(180%);
-    -webkit-backdrop-filter: blur(35px) saturate(180%);
-    border: 1px solid var(--border-color);
+    background: transparent;
+    backdrop-filter: transparent;
+    border: 0.5px solid var(--border-color);
     box-shadow: 0 8px 32px var(--shadow-color);
-    transition: all 0.3s ease;
+   /*transition: all 0.1s ease;*/
 }
 
-/* 3. 模式切换按钮 (运量明亮图标) */
+/* 3. 模式切换按钮 */
 .mode-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
     padding: 6px 16px;
-    border-radius: 30px;
+    border-radius: 10px;
     background: transparent;
     color: var(--text-muted);
     font-size: 14px;
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
     border: 1px solid transparent;
     white-space: nowrap;
 }
 .mode-btn i {
-    font-size: 16px;
+    font-size: 17px;
     color: var(--text-muted);
-    transition: all 0.2s;
+    /*transition: all 0.2s;*/
 }
 
-/* 悬停反馈 */
+/* 悬停反馈 
 .mode-btn:hover {
     color: var(--text-main);
     background: rgba(255,255,255,0.08);
 }
 .mode-btn:hover i {
     color: var(--text-main);
-}
+}*/
 
 /* 激活状态 (内置科技蓝/暖橙高亮) */
 .mode-btn.active {
     color: var(--text-contrast);
-    background: rgba(var(--text-contrast), 0.15);
+    background: transparent;
     border: 1px solid rgba(var(--text-contrast), 0.3);
     box-shadow: 0 0 15px rgba(var(--text-contrast), 0.05);
 }
@@ -79,7 +77,7 @@
 /* 4. 左右两侧文本兼容 */
 .topbar-left, .topbar-right {
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 8px;

@@ -20,9 +20,8 @@
                 if (allPosts.length === 0) {
                     console.log("加载演示收藏数据");
                     allPosts = [
-                        { title: "【演示】前端架构深度解析", subtitle: "如何设计一个可靠的微前端框架", date: "2026-07-30", mdPath: "/md/demo.md" },
-                        { title: "【演示】毛玻璃 UI 设计指南", subtitle: "探索 Glassmorphism 在 B 端系统的应用", date: "2026-07-29", mdPath: "/md/demo.md" },
-                        { title: "【演示】Vue 3 响应式原理", subtitle: "基于 Proxy 的深层响应式解密", date: "2026-07-28", mdPath: "/md/demo.md" }
+                        { title: "【占位】", subtitle: "占位】", date: "2026-07-30", mdPath: "/md/demo.md" }
+                       
                     ];
                 }
                 renderCards(allPosts);

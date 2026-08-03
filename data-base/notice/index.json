@@ -1,14 +1,8 @@
 [
   {
     "title": "系统更新通知",
-    "content": "JasperBlog 已成功升级到 2.0 版本，全面支持毛玻璃和多设备自适应！",
+    "content": "Jasper Blog 26H5，全面支持毛玻璃和多设备自适应！",
     "date": "2026-07-29",
     "type": "success"
-  },
-  {
-    "title": "新文章发布",
-    "content": "技术专栏：如何使用原生 JS 打造跨设备路由系统。",
-    "date": "2026-07-28",
-    "type": "info"
   }
 ]

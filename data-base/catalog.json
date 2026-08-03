@@ -16,7 +16,23 @@
       "category": "鸿蒙", 
       "mdPath": "/data-base/article/2/content.md",
       "cover": "/data-base/article/2/cover.jpg"
-    }  
+    },
+    { 
+      "title": "向量的概念", 
+      "subtitle": "向量的定义和基本性质", 
+      "date": "2026-07-24", 
+      "category": "平面向量", 
+      "mdPath": "/data-base/article/3/content.md",
+      "cover": "/data-base/article/3/cover.jpg"
+    },
+    { 
+      "title": "电阻器的识读", 
+      "subtitle": "关于电阻器的识别方法和技巧", 
+      "date": "2026-07-24", 
+      "category": "电工基础", 
+      "mdPath": "/data-base/article/4/content.md",
+      "cover": "/data-base/article/4/cover.jpg"
+    }
   ],
 
   "music": [

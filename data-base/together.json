@@ -1,26 +1,26 @@
 [
   {
-    "group": "友情链接",
+    "group": "共同创建",
     "list": [
       {
-        "name": "MC李大爷",
+        "name": "Cat",
+        "desc": "UI设计，CSS美化，动画效果设计",
+        "avatar": ""
+      },
+      {
+        "name": "Gqun",
         "desc": "资深老友，前端全能选手",
-        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=MC"
+        "avatar": ""
       },
       {
-        "name": "Hwyer",
-        "desc": "摄影大师，极简主义践行者",
-        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Hwyer"
+        "name": "DeepSeek",
+        "desc": "该网站JS的重要提供者",
+        "avatar": "c"
       },
       {
-        "name": "Greenyc",
-        "desc": "该网站照片的重要提供者",
-        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Greenyc"
-      },
-      {
-        "name": "Linksphotography",
-        "desc": "该网站的照片来源者",
-        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Links"
+        "name": "CodeSandwich",
+        "desc": "该网站的代码优化者",
+        "avatar": ""
       }
     ]
   },
@@ -34,12 +34,12 @@
       },
       {
         "name": "简书",
-        "desc": "不错的写博客网站",
+        "desc": "不错博客网站",
         "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=JianShu"
       },
       {
         "name": "DeepSeek",
-        "desc": "国内领先的 AI 大模型",
+        "desc": "国内领先的AI大模型",
         "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=DeepSeek"
       }
     ]

@@ -1,11 +1,11 @@
 /* 
-内容：主页全功能逻辑 (整合亮暗自适应、动态数据读取、播放器)
+内容：主页全功能逻辑
 文件目录：JASPERBLOG/modular-computer/home/script.js
 */
 (function() {
-    console.log("Home JS 已启动 (系统自适应模式)");
+    "use strict";
+    console.log("Home JS 已启动");
 
-    // 绑定 DOM 元素
     const track = document.getElementById('carouselTrack');
     const indicators = document.getElementById('carouselIndicators');
     const nextBtn = document.getElementById('carouselNext');
@@ -14,15 +14,21 @@
     const announcementList = document.getElementById('announcementList');
     const musicListContainer = document.getElementById('musicListContainer');
 
-    // 获取全局路由跳转函数
-    const navigateTo = (module) => {
-        const targetLi = document.querySelector(`[data-module="${module}"]`);
-        if (targetLi) targetLi.click();
+    // 获取全局路由函数
+    const navigateTo = (module, targetTitle) => {
+        // 如果只是普通路由跳转，不传 target
+        if (!targetTitle) {
+            const targetLi = document.querySelector(`[data-module="${module}"]`);
+            if (targetLi) targetLi.click();
+            return;
+        }
+        // 如果是带着文章标题跳转分类页
+        if (module === 'categories' && targetTitle) {
+            // 利用 URL 参数传递目标标题
+            window.location.href = `/modular-computer/categories/index.html?target=${encodeURIComponent(targetTitle)}`;
+        }
     };
 
-    // ==========================================================
-    // 【全局播放器核心配置】
-    // ==========================================================
     let allSongs = [];
     let currentSongIndex = 0;
     let playMode = 'list';
@@ -30,64 +36,52 @@
     audioPlayer.volume = 0.5;
     let volumeSlider = null;
 
-    // ==========================================================
-    // 【核心数据读取函数】(容错并适应亮暗模式)
-    // ==========================================================
     async function loadHomeData() {
         try {
-            // 尝试获取 catalog.json (相对路径)
-            const catalogRes = await fetch('../../../data-base/catalog.json');
-            
-            let catalogData = null;
-            let noticeList = [];
+            const catalogRes = await fetch('/data-base/catalog.json');
+            if (!catalogRes.ok) throw new Error('数据加载失败');
+            const catalogData = await catalogRes.json();
 
-            if (catalogRes.ok) {
-                catalogData = await catalogRes.json();
-                const noticeRes = await fetch('../../../data-base/notice/index.json');
-                if (noticeRes.ok) noticeList = await noticeRes.json();
-            }
+            const posts = catalogData.posts || [];
+            const announcements = catalogData.announcements || [];
 
-            // 【自我救场】：确保数据存在，如果JSON为空则使用内置假数据
-            if (!catalogData || !catalogData.posts || !catalogData.music) {
-                console.warn("⚠️ 未检测到有效远程数据，启用内置演示数据！");
-                catalogData = {
-                    "announcements": ["欢迎来到 Cat Blog！", "亮暗模式已完美联动。"],
-                    "posts": [
-                        { "title": "星空猫测试", "subtitle": "毛玻璃风格尝试", "category": "分类", "date": "2026-07-29" },
-                        { "title": "蓝光特效测试", "subtitle": "Web 3D 探索", "category": "分类", "date": "2026-07-28" }
-                    ],
-                    "music": ["StarSky.mp3", "GentleDream.mp3"]
-                };
-            }
-
-            // ===== 1. 公告版 =====
-            if (catalogData.announcements && catalogData.announcements.length > 0) {
-                announcementList.innerHTML = catalogData.announcements.map(text => `<p style="margin:4px 0; color:var(--text-main);">${text}</p>`).join('');
+            if (announcements.length > 0) {
+                announcementList.innerHTML = announcements.map(text => `<p style="margin:4px 0; color:var(--text-main);">${text}</p>`).join('');
             } else {
                 announcementList.innerHTML = '<p style="color:var(--text-muted);">暂无公告</p>';
             }
 
-            // ===== 2. 历史发布与轮播图 =====
-            const posts = catalogData.posts || [];
             if (posts.length > 0) {
                 const sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
-                historyList.innerHTML = sortedPosts.map(post => 
-                    `<li class="history-link" data-title="${post.title}" style="cursor:pointer; transition:0.2s; color:var(--text-muted);">· ${post.title}</li>`
-                ).join('');
+                // 【核心修改】：去掉 <a> 标签，恢复用 navigateTo 携带 target 参数
+                historyList.innerHTML = sortedPosts.map(post => `
+                    <li class="history-link" data-title="${post.title}" style="cursor:pointer; transition:0.2s; color:var(--text-muted); list-style:none; margin-bottom:8px;">
+                        · ${post.title}
+                    </li>
+                `).join('');
                 
                 document.querySelectorAll('.history-link').forEach(el => {
-                    el.onclick = () => { navigateTo('categories'); };
-                    el.onmouseenter = function() { this.style.color = 'var(--text-main)'; this.style.transform = 'translateX(6px)'; };
-                    el.onmouseleave = function() { this.style.color = ''; this.style.transform = ''; };
+                    el.onclick = function() {
+                        const title = this.getAttribute('data-title');
+                        // 找到对应的文章对象
+                        const targetPost = sortedPosts.find(p => p.title === title);
+                        if (targetPost) {
+                            // 调用路由函数，携带目标标题
+                            navigateTo('categories', targetPost.title);
+                        } else {
+                            navigateTo('categories');
+                        }
+                    };
+                    el.onmouseenter = function() { this.style.color = 'var(--text-main)'; };
+                    el.onmouseleave = function() { this.style.color = ''; };
                 });
-
+                
                 renderCarouselWithImage(sortedPosts);
             } else {
                 historyList.innerHTML = '<li style="color:var(--text-muted);">暂无文章</li>';
             }
 
-            // ===== 3. 音乐数据 =====
             if (catalogData.music && catalogData.music.length > 0) {
                 allSongs = catalogData.music;
                 renderMusicPlayerUI(catalogData.music);
@@ -97,27 +91,23 @@
 
         } catch (error) {
             console.error("发生严重错误:", error);
-            announcementList.innerHTML = '<p style="color:var(--text-muted);">数据加载失败，请检查路径</p>';
+            if(announcementList) announcementList.innerHTML = '<p style="color:var(--text-muted);">数据加载失败</p>';
         }
     }
     
-    // ==========================================================
-    // 【带图片的轮播图渲染 - 完美变色版】
-    // ==========================================================
     let currentSlide = 0;
     function renderCarouselWithImage(posts) {
-        // 【修复重点】：去掉了 `background-color: #333;` 和死路径
+        // 【核心修改】：去掉 <a> 标签，恢复用 navigateTo 携带 target 参数
         track.innerHTML = posts.map((post) => {
-            const imgPath = post.cover ? `../../../data-base/${post.cover}` : ''; 
+            const imgPath = post.cover || ''; 
             return `
-                <li class="carousel-slide" style="cursor:pointer;">
-                    <!-- 使用 var(--bg-card) 兜底，这样亮色模式就是白色，暗色就是深色 -->
+                <li class="carousel-slide" data-title="${post.title}" style="cursor:pointer;">
                     <div class="slide-bg" style="background-image: url('${imgPath}'); background-color: var(--bg-card);"></div>
                     <div class="slide-content-overlay">
                         <div class="slide-text">
-                            <h2 style="color:var(--text-main);">${post.title}</h2>
-                            <p style="color:var(--text-muted);">${post.subtitle || post.category}</p>
-                            <div class="click-hint" style="margin-top: 10px; font-size: 12px; opacity: 0.6; color:var(--text-muted);">点击查看详情</div>
+                            <h2 style="color:#ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">${post.title}</h2>
+                            <p style="color:#ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); opacity:1;">${post.subtitle || post.category}</p>
+                            <div class="click-hint" style="margin-top: 10px; font-size: 12px; opacity: 0.6; color:#ffffff;">点击查看文章</div>
                         </div>
                     </div>
                 </li>
@@ -125,7 +115,15 @@
         }).join('');
 
         document.querySelectorAll('.carousel-slide').forEach(el => {
-            el.onclick = () => { navigateTo('categories'); };
+            el.onclick = function() {
+                const title = this.getAttribute('data-title');
+                const targetPost = posts.find(p => p.title === title);
+                if (targetPost) {
+                    navigateTo('categories', targetPost.title);
+                } else {
+                    navigateTo('categories');
+                }
+            };
         });
 
         indicators.innerHTML = posts.map((_, index) => `<button class="indicator ${index === 0 ? 'active' : ''}"></button>`).join('');
@@ -144,38 +142,23 @@
         document.getElementById('heroCarousel').onmouseleave = () => { autoSlideInterval = setInterval(() => nextBtn.click(), 5000); };
     }
 
-    // ==========================================================
-    // 【全功能 UI 播放器渲染】(适配亮暗色)
-    // ==========================================================
     function renderMusicPlayerUI(songs) {
         setTimeout(function() {
             musicListContainer.innerHTML = `
-                <style>
-                    .player-progress-bar { height: 4px; background: var(--bg-card); border-radius: 2px; cursor: pointer; width: 100%; position: relative; margin: 6px 0; border: 1px solid var(--border-color); }
-                    .player-progress-bar .progress-fill { height: 100%; width: 0%; background: #4F9CF7; border-radius: 2px; position: absolute; left: 0; top: 0; pointer-events: none; }
-                    .player-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; flex-wrap: wrap;}
-                    .ctrl-btn { background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; transition: all 0.2s; padding: 0 4px; }
-                    .ctrl-btn:hover { color: var(--text-main); transform: scale(1.05); }
-                    .mode-btn { background: transparent; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; transition: 0.2s; }
-                    .vol-slider { width: 50px; height: 3px; background: var(--bg-card); border-radius: 2px; border: 1px solid var(--border-color); outline: none; cursor: pointer; }
-                    .time-display { font-size: 11px; color: var(--text-muted); min-width: 70px; text-align: center;}
-                    .music-search-box { width: 100%; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; padding: 4px 10px; color: var(--text-main); font-size: 13px; outline: none; margin-bottom: 8px; box-sizing: border-box;}
-                    .music-search-box:focus { border-color: #4F9CF7; }
-                    .music-search-box::placeholder { color: var(--text-muted); }
-                    .lyric-display { text-align: center; font-size: 13px; color: var(--text-muted); height: 24px; line-height: 24px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 4px; transition: 0.3s; }
-                    .lyric-display.playing { color: var(--text-main); }
-                    .music-item-active { background: rgba(79, 156, 247, 0.15); color: var(--text-main); border-radius: 6px; }
-                </style>
-
-                <div class="player-panel" style="padding: 6px 0;">
+                <div class="player-panel">
                     <div class="player-progress-bar" id="playerProgressBar"><div class="progress-fill" id="progressFill"></div></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); flex-shrink: 0;">
                         <span id="currentTimeDisplay">0:00</span><span id="totalTimeDisplay">0:00</span>
                     </div>
-                    <div class="lyric-display" id="lyricDisplay">🎵 准备好享受音乐了...</div>
-                    <div class="player-controls">
-                        <div style="display: flex; gap: 4px; align-items: center;">
-                            <button class="mode-btn list active" id="modeBtn"><i class="fa-solid fa-repeat"></i></button>
+                    <div class="lyric-display" id="lyricDisplay" style="flex-shrink: 0;">准备好享受音乐了...</div>
+                    
+                    <div class="player-controls" style="flex-shrink: 0;">
+                        <div style="display: flex; gap: 4px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                            <button class="sound-quality-btn active" data-quality="original">原声</button>
+                            <button class="sound-quality-btn" data-quality="bass">重低音</button>
+                            <button class="sound-quality-btn" data-quality="vocal">人声</button>
+                            <button class="sound-quality-btn" data-quality="atmos">全景声</button>
+                            <button class="sound-quality-btn" data-quality="crystal">清澈</button>
                         </div>
                         <div style="display: flex; gap: 12px; align-items: center;">
                             <button class="ctrl-btn" id="prevTrackBtn"><i class="fa-solid fa-backward-step"></i></button>
@@ -187,20 +170,20 @@
                             <input type="range" class="vol-slider" id="musicVolumeSlider" min="0" max="1" step="0.01" value="0.5">
                         </div>
                     </div>
-                </div>
 
-                <input type="text" class="music-search-box" id="musicSearchInput" placeholder="搜索歌曲名称...">
-                <div class="music-item-container" style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px; max-height: 130px; overflow-y: auto; padding-right: 4px;">
-                    ${songs.map((name, index) => `
-                        <div class="music-item" data-index="${index}" style="padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; color: var(--text-muted);">
-                            <i class="fa-regular fa-circle-play" style="margin-right: 8px; font-size: 12px; color: var(--text-muted);"></i>
-                            <span class="song-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex:1;">${name.replace(/\.mp3$/i, '')}</span>
-                        </div>
-                    `).join('')}
+                    <input type="text" class="music-search-box" id="musicSearchInput" placeholder="搜索歌曲名称..." style="flex-shrink: 0;">
+                    
+                    <div class="music-item-container">
+                        ${songs.map((name, index) => `
+                            <div class="music-item" data-index="${index}">
+                                <i class="fa-regular fa-circle-play" style="margin-right: 8px; font-size: 12px; color: var(--text-muted);"></i>
+                                <span class="song-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex:1;">${name.replace(/\.mp3$/i, '')}</span>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
 
-            // 绑定播放器事件 (保持原版逻辑)
             const progressBar = document.getElementById('playerProgressBar');
             const progressFill = document.getElementById('progressFill');
             const currentTimeDisplay = document.getElementById('currentTimeDisplay');
@@ -213,11 +196,71 @@
             const searchInput = document.getElementById('musicSearchInput');
             volumeSlider = document.getElementById('musicVolumeSlider');
 
+            const qualityBtns = document.querySelectorAll('.sound-quality-btn');
+
+            let audioCtx = null;
+            let source = null;
+            let bassFilter = null;
+            let trebleFilter = null;
+            let vocalFilter = null;
+            let panner = null;
+
+            function initAudioContext() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    source = audioCtx.createMediaElementSource(audioPlayer);
+                    bassFilter = audioCtx.createBiquadFilter();
+                    bassFilter.type = 'lowshelf';
+                    bassFilter.frequency.value = 100;
+                    bassFilter.gain.value = 0;
+                    trebleFilter = audioCtx.createBiquadFilter();
+                    trebleFilter.type = 'highshelf';
+                    trebleFilter.frequency.value = 10000;
+                    trebleFilter.gain.value = 0;
+                    vocalFilter = audioCtx.createBiquadFilter();
+                    vocalFilter.type = 'peaking';
+                    vocalFilter.frequency.value = 1000;
+                    vocalFilter.Q.value = 1;
+                    vocalFilter.gain.value = 0;
+                    panner = audioCtx.createPanner();
+                    panner.panningModel = 'equalpower';
+                    panner.setPosition(0, 0, 0);
+                    source.connect(bassFilter);
+                    bassFilter.connect(trebleFilter);
+                    trebleFilter.connect(vocalFilter);
+                    vocalFilter.connect(panner);
+                    panner.connect(audioCtx.destination);
+                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            }
+
+            function applyQuality(mode) {
+                initAudioContext();
+                switch(mode) {
+                    case 'original':
+                        bassFilter.gain.value = 0; trebleFilter.gain.value = 0; vocalFilter.gain.value = 0; panner.setPosition(0, 0, 0); break;
+                    case 'bass':
+                        bassFilter.gain.value = 12; trebleFilter.gain.value = -4; vocalFilter.gain.value = -3; panner.setPosition(0, 0, 0); break;
+                    case 'vocal':
+                        bassFilter.gain.value = -4; trebleFilter.gain.value = -4; vocalFilter.gain.value = 8; panner.setPosition(0, 0, 0); break;
+                    case 'atmos':
+                        bassFilter.gain.value = 2; trebleFilter.gain.value = 6; vocalFilter.gain.value = -2; panner.setPosition(0, -2, 0); break;
+                    case 'crystal':
+                        bassFilter.gain.value = -6; trebleFilter.gain.value = 10; vocalFilter.gain.value = 2; panner.setPosition(0, 0, 0); break;
+                }
+                qualityBtns.forEach(b => b.classList.remove('active'));
+                document.querySelector(`.sound-quality-btn[data-quality="${mode}"]`).classList.add('active');
+            }
+
+            qualityBtns.forEach(btn => {
+                btn.addEventListener('click', function() { applyQuality(this.dataset.quality); });
+            });
+
             function playSong(index) {
                 if (index < 0 || index >= allSongs.length) return;
                 currentSongIndex = index;
                 const songName = allSongs[index];
-                audioPlayer.src = `../../../data-base/music/${songName}`;
+                audioPlayer.src = `/data-base/music/${songName}`;
                 audioPlayer.play();
                 
                 document.querySelectorAll('.music-item').forEach((el, i) => {
@@ -225,8 +268,9 @@
                     el.style.color = (i === index) ? 'var(--text-main)' : 'var(--text-muted)';
                 });
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
-                lyricDisplay.textContent = `🎵 正在播放: ${songName.replace(/\.mp3$/i, '')}`;
+                lyricDisplay.textContent = `正在播放: ${songName.replace(/\.mp3$/i, '')}`;
                 lyricDisplay.className = 'lyric-display playing';
+                applyQuality('original');
             }
 
             audioPlayer.ontimeupdate = function() {
@@ -258,10 +302,17 @@
             prevBtnCtrl.onclick = () => { if(allSongs.length) playSong((currentSongIndex - 1 + allSongs.length) % allSongs.length); };
             nextBtnCtrl.onclick = () => { if(allSongs.length) playSong((currentSongIndex + 1) % allSongs.length); };
             
-            modeBtn.onclick = function() {
-                if (playMode === 'list') { playMode = 'single'; this.innerHTML = '<i class="fa-solid fa-repeat-1"></i>'; } 
-                else { playMode = 'list'; this.innerHTML = '<i class="fa-solid fa-repeat"></i>'; }
-            };
+            if (modeBtn) {
+                modeBtn.addEventListener('click', () => {
+                    if (playMode === 'list') {
+                        playMode = 'single';
+                        modeBtn.innerHTML = '<i class="fa-solid fa-repeat-1"></i>';
+                    } else {
+                        playMode = 'list';
+                        modeBtn.innerHTML = '<i class="fa-solid fa-repeat"></i>';
+                    }
+                });
+            }
             
             audioPlayer.onended = function() {
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
@@ -276,9 +327,15 @@
                     el.style.display = name.includes(val) ? 'flex' : 'none';
                 });
             };
-            document.querySelectorAll('.music-item').forEach(el => {
-                el.onclick = function() { playSong(parseInt(this.getAttribute('data-index'))); };
-            });
+            
+            // 让音乐列表的点击直接播放
+            setTimeout(() => {
+                document.querySelectorAll('.music-item').forEach(el => {
+                    el.onclick = function() { 
+                        playSong(parseInt(this.getAttribute('data-index'))); 
+                    };
+                });
+            }, 50);
 
         }, 200);
     }
