@@ -142,8 +142,11 @@
         document.getElementById('heroCarousel').onmouseleave = () => { autoSlideInterval = setInterval(() => nextBtn.click(), 5000); };
     }
 
+            // ==========================================================
+    // 【全功能 UI 播放器渲染】(极速流式启动、高保真版本)
+    // ==========================================================
     function renderMusicPlayerUI(songs) {
-        setTimeout(function() {
+        requestAnimationFrame(function() {
             musicListContainer.innerHTML = `
                 <div class="player-panel">
                     <div class="player-progress-bar" id="playerProgressBar"><div class="progress-fill" id="progressFill"></div></div>
@@ -184,160 +187,183 @@
                 </div>
             `;
 
-            const progressBar = document.getElementById('playerProgressBar');
-            const progressFill = document.getElementById('progressFill');
-            const currentTimeDisplay = document.getElementById('currentTimeDisplay');
-            const totalTimeDisplay = document.getElementById('totalTimeDisplay');
-            const playPauseBtn = document.getElementById('playPauseBtn');
-            const prevBtnCtrl = document.getElementById('prevTrackBtn');
-            const nextBtnCtrl = document.getElementById('nextTrackBtn');
-            const modeBtn = document.getElementById('modeBtn');
-            const lyricDisplay = document.getElementById('lyricDisplay');
-            const searchInput = document.getElementById('musicSearchInput');
-            volumeSlider = document.getElementById('musicVolumeSlider');
+            setTimeout(function() {
+                const progressBar = document.getElementById('playerProgressBar');
+                const progressFill = document.getElementById('progressFill');
+                const currentTimeDisplay = document.getElementById('currentTimeDisplay');
+                const totalTimeDisplay = document.getElementById('totalTimeDisplay');
+                const playPauseBtn = document.getElementById('playPauseBtn');
+                const prevBtnCtrl = document.getElementById('prevTrackBtn');
+                const nextBtnCtrl = document.getElementById('nextTrackBtn');
+                const modeBtn = document.getElementById('modeBtn');
+                const lyricDisplay = document.getElementById('lyricDisplay');
+                const searchInput = document.getElementById('musicSearchInput');
+                volumeSlider = document.getElementById('musicVolumeSlider');
 
-            const qualityBtns = document.querySelectorAll('.sound-quality-btn');
+                const qualityBtns = document.querySelectorAll('.sound-quality-btn');
 
-            let audioCtx = null;
-            let source = null;
-            let bassFilter = null;
-            let trebleFilter = null;
-            let vocalFilter = null;
-            let panner = null;
+                let audioCtx = null;
+                let source = null;
+                let bassFilter = null;
+                let trebleFilter = null;
+                let vocalFilter = null;
+                let panner = null;
 
-            function initAudioContext() {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    source = audioCtx.createMediaElementSource(audioPlayer);
-                    bassFilter = audioCtx.createBiquadFilter();
-                    bassFilter.type = 'lowshelf';
-                    bassFilter.frequency.value = 100;
-                    bassFilter.gain.value = 0;
-                    trebleFilter = audioCtx.createBiquadFilter();
-                    trebleFilter.type = 'highshelf';
-                    trebleFilter.frequency.value = 10000;
-                    trebleFilter.gain.value = 0;
-                    vocalFilter = audioCtx.createBiquadFilter();
-                    vocalFilter.type = 'peaking';
-                    vocalFilter.frequency.value = 1000;
-                    vocalFilter.Q.value = 1;
-                    vocalFilter.gain.value = 0;
-                    panner = audioCtx.createPanner();
-                    panner.panningModel = 'equalpower';
-                    panner.setPosition(0, 0, 0);
-                    source.connect(bassFilter);
-                    bassFilter.connect(trebleFilter);
-                    trebleFilter.connect(vocalFilter);
-                    vocalFilter.connect(panner);
-                    panner.connect(audioCtx.destination);
-                }
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-            }
+                function initAudioContext() {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        source = audioCtx.createMediaElementSource(audioPlayer);
+                        
+                        bassFilter = audioCtx.createBiquadFilter();
+                        bassFilter.type = 'lowshelf';
+                        bassFilter.frequency.value = 100;
+                        bassFilter.gain.value = 0;
 
-            function applyQuality(mode) {
-                initAudioContext();
-                switch(mode) {
-                    case 'original':
-                        bassFilter.gain.value = 0; trebleFilter.gain.value = 0; vocalFilter.gain.value = 0; panner.setPosition(0, 0, 0); break;
-                    case 'bass':
-                        bassFilter.gain.value = 12; trebleFilter.gain.value = -4; vocalFilter.gain.value = -3; panner.setPosition(0, 0, 0); break;
-                    case 'vocal':
-                        bassFilter.gain.value = -4; trebleFilter.gain.value = -4; vocalFilter.gain.value = 8; panner.setPosition(0, 0, 0); break;
-                    case 'atmos':
-                        bassFilter.gain.value = 2; trebleFilter.gain.value = 6; vocalFilter.gain.value = -2; panner.setPosition(0, -2, 0); break;
-                    case 'crystal':
-                        bassFilter.gain.value = -6; trebleFilter.gain.value = 10; vocalFilter.gain.value = 2; panner.setPosition(0, 0, 0); break;
-                }
-                qualityBtns.forEach(b => b.classList.remove('active'));
-                document.querySelector(`.sound-quality-btn[data-quality="${mode}"]`).classList.add('active');
-            }
+                        trebleFilter = audioCtx.createBiquadFilter();
+                        trebleFilter.type = 'highshelf';
+                        trebleFilter.frequency.value = 10000;
+                        trebleFilter.gain.value = 0;
 
-            qualityBtns.forEach(btn => {
-                btn.addEventListener('click', function() { applyQuality(this.dataset.quality); });
-            });
+                        vocalFilter = audioCtx.createBiquadFilter();
+                        vocalFilter.type = 'peaking';
+                        vocalFilter.frequency.value = 1000;
+                        vocalFilter.Q.value = 0.7;
+                        vocalFilter.gain.value = 0;
 
-            function playSong(index) {
-                if (index < 0 || index >= allSongs.length) return;
-                currentSongIndex = index;
-                const songName = allSongs[index];
-                audioPlayer.src = `/data-base/music/${songName}`;
-                audioPlayer.play();
-                
-                document.querySelectorAll('.music-item').forEach((el, i) => {
-                    el.classList.toggle('music-item-active', i === index);
-                    el.style.color = (i === index) ? 'var(--text-main)' : 'var(--text-muted)';
-                });
-                playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
-                lyricDisplay.textContent = `正在播放: ${songName.replace(/\.mp3$/i, '')}`;
-                lyricDisplay.className = 'lyric-display playing';
-                applyQuality('original');
-            }
+                        panner = audioCtx.createPanner();
+                        panner.panningModel = 'equalpower';
+                        panner.setPosition(0, 0, 0);
 
-            audioPlayer.ontimeupdate = function() {
-                if (!isNaN(audioPlayer.duration)) {
-                    const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
-                    const curMin = Math.floor(audioPlayer.currentTime / 60);
-                    const curSec = Math.floor(audioPlayer.currentTime % 60);
-                    currentTimeDisplay.textContent = `${curMin}:${curSec.toString().padStart(2, '0')}`;
-                    const totMin = Math.floor(audioPlayer.duration / 60);
-                    const totSec = Math.floor(audioPlayer.duration % 60);
-                    totalTimeDisplay.textContent = `${totMin}:${totSec.toString().padStart(2, '0')}`;
-                }
-            };
-
-            progressBar.onclick = function(e) {
-                const rect = this.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const clickPercent = x / rect.width;
-                if (!isNaN(audioPlayer.duration)) audioPlayer.currentTime = clickPercent * audioPlayer.duration;
-            };
-
-            playPauseBtn.onclick = () => {
-                if (!audioPlayer.src) { playSong(0); return; }
-                if (audioPlayer.paused) { audioPlayer.play(); playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>'; } 
-                else { audioPlayer.pause(); playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>'; }
-            };
-            
-            prevBtnCtrl.onclick = () => { if(allSongs.length) playSong((currentSongIndex - 1 + allSongs.length) % allSongs.length); };
-            nextBtnCtrl.onclick = () => { if(allSongs.length) playSong((currentSongIndex + 1) % allSongs.length); };
-            
-            if (modeBtn) {
-                modeBtn.addEventListener('click', () => {
-                    if (playMode === 'list') {
-                        playMode = 'single';
-                        modeBtn.innerHTML = '<i class="fa-solid fa-repeat-1"></i>';
-                    } else {
-                        playMode = 'list';
-                        modeBtn.innerHTML = '<i class="fa-solid fa-repeat"></i>';
+                        source.connect(bassFilter);
+                        bassFilter.connect(trebleFilter);
+                        trebleFilter.connect(vocalFilter);
+                        vocalFilter.connect(panner);
+                        panner.connect(audioCtx.destination);
                     }
-                });
-            }
-            
-            audioPlayer.onended = function() {
-                playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
-                lyricDisplay.className = 'lyric-display';
-                if (playMode === 'single') { audioPlayer.play(); } else { nextBtnCtrl.click(); }
-            };
-            volumeSlider.oninput = function() { audioPlayer.volume = parseFloat(this.value); };
-            searchInput.oninput = function() {
-                const val = this.value.toLowerCase();
-                document.querySelectorAll('.music-item').forEach(el => {
-                    const name = el.querySelector('.song-name').textContent.toLowerCase();
-                    el.style.display = name.includes(val) ? 'flex' : 'none';
-                });
-            };
-            
-            // 让音乐列表的点击直接播放
-            setTimeout(() => {
-                document.querySelectorAll('.music-item').forEach(el => {
-                    el.onclick = function() { 
-                        playSong(parseInt(this.getAttribute('data-index'))); 
-                    };
-                });
-            }, 50);
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                }
 
-        }, 200);
+                function applyQuality(mode) {
+                    initAudioContext();
+                    switch(mode) {
+                        case 'original':
+                            bassFilter.gain.value = 0; trebleFilter.gain.value = 0; vocalFilter.gain.value = 0; panner.setPosition(0, 0, 0); break;
+                        case 'bass':
+                            bassFilter.gain.value = 10; trebleFilter.gain.value = 0; vocalFilter.gain.value = -2; panner.setPosition(0, 0, 0); break;
+                        case 'vocal':
+                            bassFilter.gain.value = -4; trebleFilter.gain.value = 2; vocalFilter.gain.value = 8; panner.setPosition(0, 0, 0); break;
+                        case 'atmos':
+                            bassFilter.gain.value = 4; trebleFilter.gain.value = 6; vocalFilter.gain.value = -2; panner.setPosition(0, -1.5, 0); break;
+                        case 'crystal':
+                            bassFilter.gain.value = -8; trebleFilter.gain.value = 10; vocalFilter.gain.value = 2; panner.setPosition(0, 0, 0); break;
+                    }
+                    qualityBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelector(`.sound-quality-btn[data-quality="${mode}"]`).classList.add('active');
+                }
+
+                qualityBtns.forEach(btn => {
+                    btn.addEventListener('click', function() { applyQuality(this.dataset.quality); });
+                });
+
+                // 极简播放函数（完全基于你提供的参考）
+                function playSong(index) {
+                    if (index < 0 || index >= allSongs.length) return;
+                    currentSongIndex = index;
+                    const songName = allSongs[index];
+                    
+                    audioPlayer.preload = 'metadata'; 
+                    audioPlayer.src = `/data-base/music/${songName}`;
+                    audioPlayer.load();
+                    audioPlayer.play().catch(() => {});
+                    
+                    document.querySelectorAll('.music-item').forEach((el, i) => {
+                        el.classList.toggle('music-item-active', i === index);
+                        el.style.color = (i === index) ? 'var(--text-main)' : 'var(--text-muted)';
+                    });
+                    playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
+                    lyricDisplay.textContent = `正在播放: ${songName.replace(/\.mp3$/i, '')}`;
+                    lyricDisplay.className = 'lyric-display playing';
+                    applyQuality('original');
+                }
+
+                audioPlayer.ontimeupdate = function() {
+                    if (!isNaN(audioPlayer.duration)) {
+                        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                        progressFill.style.width = percent + '%';
+                        const curMin = Math.floor(audioPlayer.currentTime / 60);
+                        const curSec = Math.floor(audioPlayer.currentTime % 60);
+                        currentTimeDisplay.textContent = `${curMin}:${curSec.toString().padStart(2, '0')}`;
+                        const totMin = Math.floor(audioPlayer.duration / 60);
+                        const totSec = Math.floor(audioPlayer.duration % 60);
+                        totalTimeDisplay.textContent = `${totMin}:${totSec.toString().padStart(2, '0')}`;
+                    }
+                };
+
+                progressBar.onclick = function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const clickPercent = x / rect.width;
+                    if (!isNaN(audioPlayer.duration)) audioPlayer.currentTime = clickPercent * audioPlayer.duration;
+                };
+
+                playPauseBtn.onclick = () => {
+                    if (!audioPlayer.src) { playSong(0); return; }
+                    if (audioPlayer.paused) {
+                        audioPlayer.play();
+                        playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
+                        lyricDisplay.className = 'lyric-display playing';
+                    } else {
+                        audioPlayer.pause();
+                        playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+                        lyricDisplay.className = 'lyric-display';
+                    }
+                };
+                
+                prevBtnCtrl.onclick = () => { if(allSongs.length) playSong((currentSongIndex - 1 + allSongs.length) % allSongs.length); };
+                nextBtnCtrl.onclick = () => { if(allSongs.length) playSong((currentSongIndex + 1) % allSongs.length); };
+                
+                if (modeBtn) {
+                    modeBtn.addEventListener('click', () => {
+                        if (playMode === 'list') {
+                            playMode = 'single';
+                            modeBtn.innerHTML = '<i class="fa-solid fa-repeat-1"></i>';
+                        } else {
+                            playMode = 'list';
+                            modeBtn.innerHTML = '<i class="fa-solid fa-repeat"></i>';
+                        }
+                    });
+                }
+                
+                audioPlayer.onended = function() {
+                    playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+                    lyricDisplay.className = 'lyric-display';
+                    if (playMode === 'single') {
+                        audioPlayer.play();
+                    } else {
+                        nextBtnCtrl.click();
+                    }
+                };
+                volumeSlider.oninput = function() { audioPlayer.volume = parseFloat(this.value); };
+                searchInput.oninput = function() {
+                    const val = this.value.toLowerCase();
+                    document.querySelectorAll('.music-item').forEach(el => {
+                        const name = el.querySelector('.song-name').textContent.toLowerCase();
+                        el.style.display = name.includes(val) ? 'flex' : 'none';
+                    });
+                };
+                
+                // 防错延迟绑定点击播放
+                setTimeout(() => {
+                    document.querySelectorAll('.music-item').forEach(el => {
+                        el.onclick = function() { 
+                            const index = parseInt(this.getAttribute('data-index'));
+                            playSong(index);
+                        };
+                    });
+                }, 50);
+
+            }, 100);
+        });
     }
 
     loadHomeData();
