@@ -1,28 +1,7 @@
-<!-- 平板端收藏页：三列卡片 + 侧滑阅读 -->
-<!-- 文件目录：JASPERBLOG/modular-pad/collection/index.html -->
 <div class="pad-collection-module">
-    
     <div class="pad-collection-header">
         <h2><i class="fa-regular fa-star"></i> 我的收藏</h2>
-        <span id="pad-collection-count" class="pad-count-badge">0 篇</span>
+        <span class="collection-count" id="pad-collection-count">0 篇</span>
     </div>
-
-    <!-- 三列大卡片网格 -->
-    <div class="pad-collection-grid" id="pad-collection-grid">
-        <div class="pad-empty-state">
-            <i class="fa-regular fa-star" style="font-size: 48px; opacity: 0.2; margin-bottom: 16px;"></i>
-            <p>还没有收藏文章</p>
-        </div>
-    </div>
-
-    <!-- 右侧侧滑阅读器 (默认隐藏) -->
-    <div id="pad-collection-reader" class="pad-side-drawer hidden">
-        <div class="pad-drawer-container glass-panel">
-            <div class="pad-drawer-header">
-                <div id="pad-reader-title" class="drawer-title">加载中...</div>
-                <button id="pad-close-reader" class="drawer-close-btn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="pad-reader-body" class="drawer-body">正在加载内容...</div>
-        </div>
-    </div>
+    <div class="pad-collection-waterfall" id="pad-collection-grid"></div>
 </div>

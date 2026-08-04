@@ -1,5 +1,5 @@
 /* 
-内容：主页全功能逻辑
+内容：电脑端主页全功能逻辑
 文件目录：JASPERBLOG/modular-computer/home/script.js
 */
 (function() {
@@ -16,15 +16,12 @@
 
     // 获取全局路由函数
     const navigateTo = (module, targetTitle) => {
-        // 如果只是普通路由跳转，不传 target
         if (!targetTitle) {
             const targetLi = document.querySelector(`[data-module="${module}"]`);
             if (targetLi) targetLi.click();
             return;
         }
-        // 如果是带着文章标题跳转分类页
         if (module === 'categories' && targetTitle) {
-            // 利用 URL 参数传递目标标题
             window.location.href = `/modular-computer/categories/index.html?target=${encodeURIComponent(targetTitle)}`;
         }
     };
@@ -54,7 +51,6 @@
             if (posts.length > 0) {
                 const sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
-                // 【核心修改】：去掉 <a> 标签，恢复用 navigateTo 携带 target 参数
                 historyList.innerHTML = sortedPosts.map(post => `
                     <li class="history-link" data-title="${post.title}" style="cursor:pointer; transition:0.2s; color:var(--text-muted); list-style:none; margin-bottom:8px;">
                         · ${post.title}
@@ -64,10 +60,8 @@
                 document.querySelectorAll('.history-link').forEach(el => {
                     el.onclick = function() {
                         const title = this.getAttribute('data-title');
-                        // 找到对应的文章对象
                         const targetPost = sortedPosts.find(p => p.title === title);
                         if (targetPost) {
-                            // 调用路由函数，携带目标标题
                             navigateTo('categories', targetPost.title);
                         } else {
                             navigateTo('categories');
@@ -97,7 +91,6 @@
     
     let currentSlide = 0;
     function renderCarouselWithImage(posts) {
-        // 【核心修改】：去掉 <a> 标签，恢复用 navigateTo 携带 target 参数
         track.innerHTML = posts.map((post) => {
             const imgPath = post.cover || ''; 
             return `
@@ -142,9 +135,6 @@
         document.getElementById('heroCarousel').onmouseleave = () => { autoSlideInterval = setInterval(() => nextBtn.click(), 5000); };
     }
 
-            // ==========================================================
-    // 【全功能 UI 播放器渲染】(极速流式启动、高保真版本)
-    // ==========================================================
     function renderMusicPlayerUI(songs) {
         requestAnimationFrame(function() {
             musicListContainer.innerHTML = `
@@ -213,27 +203,22 @@
                     if (!audioCtx) {
                         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                         source = audioCtx.createMediaElementSource(audioPlayer);
-                        
                         bassFilter = audioCtx.createBiquadFilter();
                         bassFilter.type = 'lowshelf';
                         bassFilter.frequency.value = 100;
                         bassFilter.gain.value = 0;
-
                         trebleFilter = audioCtx.createBiquadFilter();
                         trebleFilter.type = 'highshelf';
                         trebleFilter.frequency.value = 10000;
                         trebleFilter.gain.value = 0;
-
                         vocalFilter = audioCtx.createBiquadFilter();
                         vocalFilter.type = 'peaking';
                         vocalFilter.frequency.value = 1000;
                         vocalFilter.Q.value = 0.7;
                         vocalFilter.gain.value = 0;
-
                         panner = audioCtx.createPanner();
                         panner.panningModel = 'equalpower';
                         panner.setPosition(0, 0, 0);
-
                         source.connect(bassFilter);
                         bassFilter.connect(trebleFilter);
                         trebleFilter.connect(vocalFilter);
@@ -265,12 +250,10 @@
                     btn.addEventListener('click', function() { applyQuality(this.dataset.quality); });
                 });
 
-                // 极简播放函数（完全基于你提供的参考）
                 function playSong(index) {
                     if (index < 0 || index >= allSongs.length) return;
                     currentSongIndex = index;
                     const songName = allSongs[index];
-                    
                     audioPlayer.preload = 'metadata'; 
                     audioPlayer.src = `/data-base/music/${songName}`;
                     audioPlayer.load();
@@ -352,7 +335,6 @@
                     });
                 };
                 
-                // 防错延迟绑定点击播放
                 setTimeout(() => {
                     document.querySelectorAll('.music-item').forEach(el => {
                         el.onclick = function() { 

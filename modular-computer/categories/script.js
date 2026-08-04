@@ -1,5 +1,5 @@
 /* 
-内容：分类归档引擎 (多标签、三栏布局、阅读器) - 自动识别 URL 目标版
+内容：电脑端分类页核心逻辑 (完整复制原版纯逻辑)
 文件目录：JASPERBLOG/modular-computer/categories/script.js 
 */
 (function() {
@@ -19,9 +19,9 @@
     };
 
     const EMPTY_STATE_HTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%;">
-            <h1 style="font-size: 40px; color: rgba(255,255,255,0.8); font-weight: 300; margin-bottom: 10px;">阅读文章区域</h1>
-            <p style="font-size: 15px; color: rgba(255,255,255,0.4);">请从左侧选择分类与文章以开始阅读</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <h1 style="font-size: 40px; color: var(--text-main); font-weight: 300; margin-bottom: 10px;">阅读文章区域</h1>
+            <p style="font-size: 15px; color: var(--text-muted);">请从左侧选择分类与文章以开始阅读</p>
         </div>
     `;
 
@@ -38,7 +38,7 @@
             return;
         }
 
-        readerContainer.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%; width:100%; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-circle-notch fa-spin" style="margin-right:10px;"></i> 加载中...</div>`;
+        readerContainer.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%; width:100%; color: var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin" style="margin-right:10px;"></i> 加载中...</div>`;
 
         try {
             if (typeof marked === 'undefined') {
@@ -150,9 +150,6 @@
         addBtn.className = 'tab-add-btn';
         addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
         tabBar.appendChild(addBtn);
-        const spacer = document.createElement('div');
-        spacer.style.cssText = 'flex:1;';
-        tabBar.appendChild(spacer);
     }
 
     function closeTab(index) {
@@ -190,7 +187,7 @@
             const data = await response.json();
             allPosts = data.posts || [];
             if (allPosts.length === 0) {
-                categorySwitchList.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 20px;">暂无文章数据</div>`;
+                categorySwitchList.innerHTML = `<div style="color:var(--text-muted); text-align:center; padding: 20px;">暂无文章数据</div>`;
                 return;
             }
             renderTabs();
@@ -201,7 +198,6 @@
         }
     }
 
-    // 渲染左侧分类
     function renderCategorySwitcher(posts) {
         const categories = [...new Set(posts.map(p => p.category))];
         const defaultCat = categories.length > 0 ? categories[0] : null;
@@ -225,12 +221,11 @@
         }
     }
 
-    // 渲染中间文章列表
     function renderArticleList(filteredPosts) {
         const sorted = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
         articleSwitchList.innerHTML = '';
         if (sorted.length === 0) {
-            articleSwitchList.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 20px;">该分类暂无文章</div>`;
+            articleSwitchList.innerHTML = `<div style="color:var(--text-muted); text-align:center; padding: 20px;">该分类暂无文章</div>`;
             return;
         }
         sorted.forEach((post, index) => {
@@ -248,23 +243,18 @@
     }
 
     // ==========================================================
-    // 【新增】：自动识别 URL 参数并自动跳转阅读器
+    // 【核心逻辑】：自动识别 URL 参数并自动跳转阅读器
     // ==========================================================
     let isAutoOpening = false;
 
     function tryAutoOpenReader() {
-        // 如果正在自动打开过程中，或者分类/文章列表没加载出来，跳过
         if (isAutoOpening || !allPosts || allPosts.length === 0) return;
         
-        // 从 URL 中提取 target 参数
         const urlParams = new URLSearchParams(window.location.search);
         const targetTitle = urlParams.get('target');
-        
         if (!targetTitle) return;
 
         console.log(`检测到目标文章: ${targetTitle}`);
-
-        // 1. 查找目标文章是否存在
         const targetPost = allPosts.find(p => p.title === targetTitle);
         if (!targetPost) {
             console.warn("未在数据中找到对应文章");
@@ -273,7 +263,6 @@
 
         isAutoOpening = true;
 
-        // 2. 查找并激活对应的分类
         const categoryBtns = document.querySelectorAll('.category-btn');
         let targetCatBtn = null;
         categoryBtns.forEach(btn => {
@@ -283,39 +272,31 @@
         });
 
         if (targetCatBtn) {
-            // 触发分类切换
             targetCatBtn.click();
 
-            // 3. 等待文章列表渲染完毕后，自动点击对应文章
             setTimeout(() => {
                 const articleItems = document.querySelectorAll('.article-item');
                 let found = false;
                 articleItems.forEach(item => {
                     const titleEl = item.querySelector('.title');
                     if (titleEl && titleEl.textContent.trim() === targetPost.title) {
-                        item.click(); // 触发阅读器
+                        item.click();
                         found = true;
-                        console.log(" 成功自动打开文章:", targetPost.title);
+                        console.log(" ✅ 成功自动打开文章:", targetPost.title);
                     }
                 });
                 if (!found) {
                     console.warn("目标文章未出现在列表中，可能分类错误");
                 }
                 isAutoOpening = false;
-            }, 800); // 延迟 800 毫秒确保列表已刷新
-            
+            }, 800);
         } else {
             console.warn("未找到对应的分类按钮");
             isAutoOpening = false;
         }
     }
 
-    // 启动分类引擎
     loadCategoriesData();
-
-    // 延迟执行自动打开逻辑，确保页面数据加载完毕
     setTimeout(tryAutoOpenReader, 500);
-    
-    // 额外安全措施：若浏览器渲染慢，再多等一秒再尝试一次
     setTimeout(tryAutoOpenReader, 1200);
 })();

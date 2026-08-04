@@ -1,138 +1,31 @@
-/* 平板分类页专属样式 (双栏 + 卡片) */
-/* 文件目录：JASPERBLOG/modular-pad/categories/style.css */
+.pad-categories-module { height: 100%; display: flex; flex-direction: column; gap: 10px; padding: 14px; box-sizing: border-box; max-width: 850px; margin: 0 auto; }
+.glass-panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; }
+.global-tab-bar { display: flex; align-items: flex-end; padding: 0 12px; flex-shrink: 0; height: 44px; border-bottom: none; gap: 4px; }
+.tab-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px 8px 0 0; cursor: pointer; color: var(--text-muted); font-size: 13px; border: 1px solid transparent; border-bottom: 2px solid transparent; transition: 0.2s; white-space: nowrap; }
+.tab-item:hover { background: var(--bg-card); color: var(--text-main); }
+.tab-item.active { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-bottom: 2px solid var(--text-contrast); }
+.tab-add-btn { display: flex; align-items: center; justify-content: center; padding: 6px 10px; cursor: pointer; color: var(--text-muted); border-radius: 6px; }
+.tab-add-btn:hover { color: var(--text-main); background: var(--bg-card); }
 
-.pad-categories-module {
-    display: flex;
-    flex-direction: row; /* 左右布局 */
-    height: 100%;
-    padding: 12px;
-    box-sizing: border-box;
-    gap: 12px;
-}
+.pad-layout { flex: 1; display: flex; gap: 12px; min-height: 0; }
+.pad-nav-side { width: 30%; min-width: 160px; display: flex; flex-direction: column; padding: 12px 10px; }
+.address-bar { display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px 12px; margin-bottom: 12px; }
+.address-bar input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); font-size: 14px; padding: 6px 0; }
+.address-bar input::placeholder { color: var(--text-muted); }
+.nav-tree-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.nav-tree-list::-webkit-scrollbar { width: 4px; } .nav-tree-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-.glass-panel {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(79, 156, 247, 0.3);
-    border-radius: 16px;
-}
+.pad-content-area { flex: 1; display: flex; flex-direction: column; padding: 12px; gap: 12px; }
+.pane-list { display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto; flex-shrink: 0; }
+.pane-list::-webkit-scrollbar { width: 4px; } .pane-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+.reading-content { flex: 1; background: var(--bg-card); backdrop-filter: blur(6px); border-radius: 10px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; overflow: hidden; position: relative; }
+.empty-preview h1 { font-size: 32px; color: var(--text-main); font-weight: 300; margin-bottom: 10px; }
+.empty-preview p { font-size: 14px; color: var(--text-muted); }
 
-/* ================= 左侧导航 ================= */
-.pad-nav-side {
-    width: 28%; /* 左边占据 28% */
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 14px;
-    flex-shrink: 0;
-}
-
-.pad-tab-scroll-wrapper {
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
-}
-.pad-tab-scroll-wrapper::-webkit-scrollbar { display: none; }
-
-.pad-tab-container {
-    display: flex;
-    gap: 6px;
-}
-.pad-tab-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.03);
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-}
-.pad-tab-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
-.pad-tab-item.active {
-    background: rgba(79, 156, 247, 0.2);
-    border-color: #4F9CF7;
-    color: #ffffff;
-}
-
-.pad-search-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 8px 12px;
-}
-.pad-search-container i { color: rgba(255,255,255,0.4); }
-.pad-search-container input {
-    flex: 1; background: transparent; border: none; outline: none;
-    color: #fff; font-size: 13px;
-}
-
-/* ================= 右侧内容 ================= */
-.pad-content-side {
-    flex: 1; /* 占据剩余空间 */
-    overflow-y: auto;
-}
-.pad-content-side::-webkit-scrollbar { width: 4px; }
-.pad-content-side::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-
-.pad-article-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 双列卡片网格 */
-    gap: 12px;
-    padding-bottom: 10px;
-}
-
-.pad-empty-state {
-    grid-column: span 2;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 60%; color: rgba(255,255,255,0.5);
-}
-
-.pad-article-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
-    padding: 16px;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-}
-.pad-article-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.08); }
-.pad-article-card h3 { font-size: 16px; font-weight: 600; color: #fff; margin: 0 0 6px 0; }
-.pad-article-card p { font-size: 13px; color: rgba(255,255,255,0.6); margin: 0; }
-
-/* ================= 右侧半屏阅读器 ================= */
-.pad-reader-overlay {
-    position: fixed; top: 80px; right: 0;
-    width: 45%; height: calc(100vh - 150px);
-    z-index: 9999;
-    pointer-events: none;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-.pad-reader-overlay.hidden { transform: translateX(100%); opacity: 0; pointer-events: none; }
-
-.pad-reader-panel {
-    width: 100%; height: 100%;
-    background: rgba(18, 22, 30, 0.85);
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    pointer-events: auto;
-}
-.pad-reader-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.reader-title { font-size: 18px; font-weight: 600; color: #fff; }
-.reader-controls { display: flex; gap: 10px; }
-.reader-close-btn { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 20px; cursor: pointer; }
-.pad-reader-body {
-    flex: 1; overflow-y: auto; padding: 24px;
-    color: rgba(255,255,255,0.85); line-height: 1.8; font-size: 15px;
-}
-.loading-tip { text-align: center; color: rgba(255,255,255,0.4); padding-top: 40px; }
+.category-btn, .article-item { padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.15s; display: flex; flex-direction: column; border: 1px solid transparent; }
+.category-btn { flex-direction: row; align-items: center; gap: 8px; color: var(--text-main); font-size: 13px; }
+.category-btn i { font-size: 14px; color: var(--text-muted); width: 16px; text-align: center; }
+.article-item .title { color: var(--text-main); font-size: 13px; font-weight: 500; }
+.article-item .subtitle { color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+.category-btn:hover, .article-item:hover { background: var(--bg-card); }
+.category-btn.active, .article-item.active { background: rgba(var(--text-contrast), 0.15); border-color: var(--text-contrast); color: var(--text-contrast); }

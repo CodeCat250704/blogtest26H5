@@ -1,47 +1,218 @@
-<!-- 平板分类页：左列分类，右列卡片网格 -->
-<!-- 文件目录：JASPERBLOG/modular-pad/categories/index.html -->
-<div class="pad-categories-module">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类 - 平板</title>
     
-    <!-- 1. 左侧分类导航 -->
-    <div class="pad-nav-side glass-panel">
-        <!-- 顶部滑块 Tab (紧凑型) -->
-        <div class="pad-tab-scroll-wrapper">
-            <div id="pad-category-tabs" class="pad-tab-container">
-                <!-- 分类由 JS 动态生成 -->
-            </div>
-        </div>
+    <!-- 图标库 & 全局主题变量 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/overall-situation/overall.css">
+
+    <style>
+        /* --- 1. 基础重置与布局 --- */
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100vh;
+            overflow: hidden;
+            font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #2c2c2c;
+            color: var(--text-main);
+        }
+
+        /* --- 2. 原生壁纸（保持默认，不加过度滤镜） --- */
+        .app-wallpaper {
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            background-image: url('/overall-situation/background.png');
+            background-size: cover; background-position: center;
+            z-index: 0;
+        }
+
+        /* 内容层浮在壁纸上 */
+        .app-container {
+            position: relative; z-index: 2;
+            width: 100%; height: 100vh;
+            display: flex; flex-direction: column;
+            padding: 16px 16px 60px 16px; /* 底部留出任务栏空间 */
+            box-sizing: border-box;
+        }
+
+        /* --- 3. 顶部返回按钮 --- */
+        .app-top-bar {
+            display: flex; align-items: center;
+            padding: 0 0 12px 0; flex-shrink: 0;
+            height: 50px; /* 固定高度容纳按钮 */
+        }
+        .app-back-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 6px 14px;
+            color: var(--text-main);
+            font-size: 13px;
+            text-decoration: none;
+            display: none; /* 默认隐藏 */
+            align-items: center; gap: 6px;
+            backdrop-filter: blur(6px);
+            transition: 0.2s;
+        }
+        .app-back-btn:hover { background: rgba(255,255,255,0.15); }
+
+        /* --- 4. 核心毛玻璃卡片双栏布局 --- */
+        .app-dual-panel {
+            flex: 1;
+            display: flex;
+            gap: 12px;
+            min-height: 0;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* 左侧导航栏 (列表) */
+        .list-pane {
+            width: 34%; max-width: 280px;
+            border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column;
+            padding: 16px 0;
+        }
+        .list-title {
+            font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+            color: var(--text-light);
+            padding: 0 16px 12px 16px;
+        }
+        .list-scroll-area {
+            flex: 1; overflow-y: auto; padding: 0 10px;
+        }
+
+        /* 自定义卡片内滚动条 (贴合系统主题) */
+        .list-scroll-area::-webkit-scrollbar, .reader-content::-webkit-scrollbar { width: 4px; }
+        .list-scroll-area::-webkit-scrollbar-thumb, .reader-content::-webkit-scrollbar-thumb {
+            background: var(--text-light); border-radius: 4px;
+        }
+
+        /* 分类/文章列表项 (毛玻璃蓝边触点) */
+        .list-item {
+            padding: 10px 14px; margin-bottom: 4px; border-radius: 10px;
+            cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 10px;
+            color: var(--text-muted); font-size: 14px;
+            border: 1px solid transparent;
+        }
+        .list-item:hover { background: rgba(255,255,255,0.05); }
+        .list-item.active {
+            background: rgba(79, 156, 247, 0.15);
+            border: 1px solid rgba(79, 156, 247, 0.3);
+            color: var(--text-main);
+        }
+
+        /* 右侧阅读区 */
+        .reader-pane {
+            flex: 1; display: flex; flex-direction: column; padding: 16px 20px 16px 10px;
+            overflow: hidden;
+        }
+        .reader-content {
+            flex: 1; overflow-y: auto; padding: 0 4px 0 0;
+            color: var(--text-main);
+            line-height: 1.8; font-size: 15px;
+            background: transparent;
+        }
+
+        /* 阅读器内 Markdown 样式 (自动适应暗色/亮色) */
+        .reader-content h1, .reader-content h2, .reader-content h3 { 
+            color: var(--text-main); font-weight: 600; margin: 20px 0 12px 0; 
+        }
+        .reader-content h1 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .reader-content p { color: var(--text-muted); margin-bottom: 16px; }
+        .reader-content pre { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; overflow-x: auto; margin: 16px 0; border: 1px solid var(--border-color); }
+        .reader-content img { max-width: 100%; border-radius: 8px; margin: 16px 0; }
+        .reader-content code { background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; }
+
+        .empty-state {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100%; color: var(--text-muted);
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+
+        /* --- 5. 任务栏自适应 --- */
+        #taskbar-wrapper {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            z-index: 99;
+            pointer-events: none;
+        }
+        #taskbar-core {
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wallpaper"></div>
+    
+    <div class="app-container">
         
-        <!-- 垂直搜索框 -->
-        <div class="pad-search-container">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="pad-search-input" placeholder="搜索..." autocomplete="off">
+        <!-- 返回首页按钮 (独立打开时显示) -->
+        <div class="app-top-bar">
+            <a href="/index.html" class="app-back-btn" id="backHomeBtn">
+                <i class="fa-solid fa-arrow-left"></i> 返回首页
+            </a>
         </div>
-    </div>
 
-    <!-- 2. 右侧内容网格 -->
-    <div class="pad-content-side">
-        <!-- 双列网格 -->
-        <div class="pad-article-grid" id="pad-article-grid-container">
-            <div class="pad-empty-state">
-                <i class="fa-regular fa-folder-open" style="font-size: 48px; opacity: 0.3; margin-bottom: 15px;"></i>
-                <p>请选择分类以加载文章</p>
+        <!-- 核心双栏毛玻璃面板 -->
+        <div class="app-dual-panel">
+            
+            <!-- 左栏：分类 -->
+            <div class="list-pane">
+                <div class="list-title">分类导航</div>
+                <div class="list-scroll-area" id="category-switch-list"></div>
             </div>
-        </div>
-    </div>
 
-    <!-- 3. 右侧半屏阅读器 (默认隐藏) -->
-    <div id="pad-reader-overlay" class="pad-reader-overlay hidden">
-        <div class="pad-reader-panel glass-panel">
-            <div class="pad-reader-header">
-                <div class="reader-title" id="pad-reader-title">文章标题</div>
-                <div class="reader-controls">
-                    <button id="pad-close-reader" class="reader-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            <!-- 右栏：文章与阅读 -->
+            <div class="reader-pane">
+                <div class="list-title">文章列表</div>
+                <div class="list-scroll-area" id="article-switch-list" style="flex: 0 0 auto; max-height: 140px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                </div>
+                
+                <div class="reader-content" id="embedded-reader-content">
+                    <div class="empty-state">
+                        <i class="fa-regular fa-book-open"></i>
+                        <span>选择一篇文章开始阅读</span>
+                    </div>
                 </div>
             </div>
-            <div class="pad-reader-body" id="pad-reader-body">
-                <div class="loading-tip">正在加载 Markdown...</div>
-            </div>
+
         </div>
     </div>
 
-</div>
+    <!-- 底部全局任务栏挂载点 -->
+    <div id="taskbar-wrapper"></div>
+
+    <!-- ============================ -->
+    <!-- JS 逻辑加载区 -->
+    <!-- ============================ -->
+
+    <!-- 1. 加载全局底层 JS -->
+    <script src="/overall-situation/equipment.js"></script>
+    <script src="/overall-situation/taskbar/script.js"></script>
+
+    <!-- 2. 加载页内辅助逻辑 (返回按钮显示、任务栏注入) -->
+    <script>
+        (function() {
+            // 智能显示返回首页按钮
+            const backBtn = document.getElementById('backHomeBtn');
+            const isStandalone = !document.referrer || !document.referrer.includes('/modular-');
+            if (isStandalone) backBtn.style.display = 'flex';
+
+            // 挂载全局底部任务栏
+            fetch('/overall-situation/taskbar/index.html').then(r => r.text()).then(h => {
+                document.getElementById('taskbar-wrapper').innerHTML = h;
+            });
+        })();
+    </script>
+
+    <!-- 3. 加载分类页核心逻辑 -->
+    <script src="script.js"></script>
+</body>
+</html>

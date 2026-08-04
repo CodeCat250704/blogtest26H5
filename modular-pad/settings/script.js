@@ -1,23 +1,15 @@
 (function() {
-    "use strict";
-    const btns = document.querySelectorAll('.pad-theme-btn');
+    const btns = document.querySelectorAll('.theme-btn');
     let currentTheme = localStorage.getItem('jasper_theme') || 'light';
-    applyTheme(currentTheme);
-    function applyTheme(theme) {
-        document.body.classList.remove('dark-mode', 'sunset-mode');
-        if (theme === 'dark') document.body.classList.add('dark-mode');
-        else if (theme === 'sunset') document.body.classList.add('sunset-mode');
-        btns.forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.pad-theme-btn[data-theme="${theme}"]`);
-        if (activeBtn) activeBtn.classList.add('active');
-        localStorage.setItem('jasper_theme', theme);
+    function apply(t) {
+        document.body.classList.remove('light-mode', 'dark-mode', 'sunset-mode');
+        if (t === 'light') document.body.classList.add('light-mode');
+        else if (t === 'dark') document.body.classList.add('dark-mode');
+        else if (t === 'sunset') document.body.classList.add('sunset-mode');
+        btns.forEach(b => b.classList.remove('active'));
+        document.querySelector(`.theme-btn[data-theme="${t}"]`).classList.add('active');
+        localStorage.setItem('jasper_theme', t);
     }
-    btns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const theme = this.dataset.theme;
-            if (theme === currentTheme) return;
-            currentTheme = theme;
-            applyTheme(theme);
-        });
-    });
+    btns.forEach(b => b.addEventListener('click', function() { apply(this.dataset.theme); }));
+    apply(currentTheme);
 })();

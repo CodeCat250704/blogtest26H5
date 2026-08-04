@@ -1,21 +1,14 @@
-/* 平板分类页逻辑：Tab切换 + 双列卡片 + 右侧展开阅读 */
-/* 文件目录：JASPERBLOG/modular-pad/categories/script.js */
-
+/* 
+内容：平板端分类页核心逻辑
+文件目录：JASPERBLOG/modular-pad/categories/script.js 
+*/
 (function() {
-    "use strict";
-
-    const tabContainer = document.getElementById('pad-category-tabs');
-    const gridContainer = document.getElementById('pad-article-grid-container');
-    const searchInput = document.getElementById('pad-search-input');
-    
-    // 阅读器元素
-    const readerOverlay = document.getElementById('pad-reader-overlay');
-    const readerTitle = document.getElementById('pad-reader-title');
-    const readerBody = document.getElementById('pad-reader-body');
-    const closeReaderBtn = document.getElementById('pad-close-reader');
+    const categorySwitchList = document.getElementById('category-switch-list');
+    const articleSwitchList = document.getElementById('article-switch-list');
+    const readerContainer = document.getElementById('embedded-reader-content');
 
     let allPosts = [];
-    let currentCategory = '';
+    let hljsLoaded = false;
 
     const iconMap = {
         "前端开发": "fa-solid fa-code", "后端架构": "fa-solid fa-server",
@@ -23,133 +16,126 @@
         "生活随笔": "fa-solid fa-mug-saucer", "科技前沿": "fa-solid fa-microchip"
     };
 
-    // 1. 读取数据
-    async function loadPadCategories() {
+    // 1. 数据加载与分类渲染
+    async function loadCategoriesData() {
         try {
-            const res = await fetch('../../../data-base/catalog.json');
-            if (!res.ok) throw new Error('读取失败');
-            const data = await res.json();
+            const response = await fetch('/data-base/catalog.json');
+            if (!response.ok) throw new Error();
+            const data = await response.json();
             allPosts = data.posts || [];
-            if (allPosts.length === 0) {
-                gridContainer.innerHTML = '<div class="pad-empty-state"><p>暂无文章数据</p></div>';
-                return;
-            }
-            renderTabs(allPosts);
-        } catch (e) {
-            console.error("平板分类加载失败:", e);
-            gridContainer.innerHTML = '<div class="pad-empty-state"><p style="color:#ffcccc;">数据加载失败</p></div>';
+            renderCategories(allPosts);
+        } catch (error) {
+            categorySwitchList.innerHTML = `<div style="color:#ffcccc; padding:20px;">数据加载失败</div>`;
         }
     }
 
-    // 2. 渲染左侧 Tabs
-    function renderTabs(posts) {
+    function renderCategories(posts) {
         const categories = [...new Set(posts.map(p => p.category))];
-        tabContainer.innerHTML = '';
-        
-        categories.forEach((cat, index) => {
-            const tab = document.createElement('div');
-            tab.className = 'pad-tab-item' + (index === 0 ? ' active' : '');
+        categorySwitchList.innerHTML = '';
+        categories.forEach((cat, i) => {
+            const btn = document.createElement('div');
+            btn.className = 'list-item' + (i === 0 ? ' active' : '');
             const iconClass = iconMap[cat] || "fa-regular fa-folder";
-            tab.innerHTML = `<i class="${iconClass}"></i> ${cat}`;
-            
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.pad-tab-item').forEach(el => el.classList.remove('active'));
+            btn.innerHTML = `<i class="${iconClass}" style="width: 18px; text-align: center;"></i> ${cat}`;
+            btn.onclick = function() {
+                document.querySelectorAll('#category-switch-list .list-item').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
-                currentCategory = cat;
-                renderCards(posts.filter(p => p.category === cat));
-                // 切换分类时自动关闭阅读器
-                readerOverlay.classList.add('hidden');
-            });
-            tabContainer.appendChild(tab);
+                renderArticles(posts.filter(p => p.category === cat));
+            };
+            categorySwitchList.appendChild(btn);
         });
-        const firstTab = tabContainer.querySelector('.pad-tab-item');
-        if (firstTab) firstTab.click();
+        categories.length > 0 && document.querySelector('#category-switch-list .list-item').click();
     }
 
-    // 3. 渲染右侧双列卡片
-    function renderCards(filteredPosts) {
-        const sorted = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-        gridContainer.innerHTML = '';
-        
+    // 2. 文章列表渲染
+    function renderArticles(filtered) {
+        const sorted = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+        articleSwitchList.innerHTML = '';
         if (sorted.length === 0) {
-            gridContainer.innerHTML = '<div class="pad-empty-state"><p>该分类暂无内容</p></div>';
+            articleSwitchList.innerHTML = `<div style="color:var(--text-muted); padding:10px; text-align:center;">该分类暂无文章</div>`;
             return;
         }
-
-        sorted.forEach(post => {
-            const card = document.createElement('div');
-            card.className = 'pad-article-card';
-            card.innerHTML = `
-                <h3>${post.title}</h3>
-                <p>${post.subtitle || '点击阅读完整内容'}</p>
-                <div style="margin-top:8px; font-size:12px; color:rgba(255,255,255,0.4);">${post.date}</div>
-            `;
-            card.addEventListener('click', () => {
-                openPadReader(post);
-            });
-            gridContainer.appendChild(card);
+        sorted.forEach((post, i) => {
+            const item = document.createElement('div');
+            item.className = 'list-item' + (i === 0 ? ' active' : '');
+            item.innerHTML = `<span>${post.title}</span>`;
+            item.onclick = function() {
+                document.querySelectorAll('#article-switch-list .list-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+                openEmbeddedReader(post);
+            };
+            articleSwitchList.appendChild(item);
         });
+        const firstItem = articleSwitchList.querySelector('.list-item');
+        if (firstItem) firstItem.click();
     }
 
-    // 4. 搜索功能
-    searchInput.addEventListener('input', function() {
-        const val = this.value.toLowerCase();
-        const currentPosts = allPosts.filter(p => p.category === currentCategory);
-        const filtered = currentPosts.filter(p => p.title.toLowerCase().includes(val));
-        renderCards(filtered);
-    });
-
-    // 5. 右侧打开阅读器
-    async function openPadReader(post) {
-        readerTitle.textContent = post.title;
-        readerOverlay.classList.remove('hidden');
-        readerBody.innerHTML = '<div class="loading-tip"><i class="fa-solid fa-circle-notch fa-spin"></i> 加载中...</div>';
-
-        const mdUrl = post.mdPath;
-        if (!mdUrl) {
-            readerBody.innerHTML = '未配置文章路径';
-            return;
-        }
-
+    // 3. 阅读器
+    async function openEmbeddedReader(post) {
+        if (!post || !post.mdPath) { readerContainer.innerHTML = '未找到文章路径'; return; }
+        readerContainer.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin"></i> 加载中...</div>`;
         try {
             if (typeof marked === 'undefined') {
-                await new Promise(resolve => {
-                    const s = document.createElement('script');
-                    s.src = 'https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js';
-                    s.onload = resolve;
-                    document.head.appendChild(s);
-                });
+                await new Promise(resolve => { let s = document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js'; s.onload=resolve; document.head.appendChild(s); });
             }
-
-            const res = await fetch(mdUrl);
+            if (!hljsLoaded) {
+                await new Promise(resolve => { let s = document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js'; s.onload=resolve; document.head.appendChild(s); });
+                let link = document.createElement('link'); link.rel='stylesheet'; link.href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css'; document.head.appendChild(link);
+                hljsLoaded = true;
+            }
+            const res = await fetch(post.mdPath);
             if (!res.ok) throw new Error('404');
-            const rawText = await res.text();
+            let md = await res.text();
 
             let baseUrl = '';
-            const idx = mdUrl.lastIndexOf('/');
-            if (idx !== -1) baseUrl = mdUrl.substring(0, idx + 1) + 'picture/';
+            const idx = post.mdPath.lastIndexOf('/');
+            if (idx !== -1) baseUrl = post.mdPath.substring(0, idx + 1) + 'picture/';
             const renderer = new marked.Renderer();
             renderer.image = function(href, title, text) {
-                if (!href.startsWith('http') && !href.startsWith('/')) {
-                    href = baseUrl + href;
-                }
+                if (!href.startsWith('http') && !href.startsWith('/')) href = baseUrl + href;
                 return `<img src="${href}" alt="${text}" style="max-width:100%; border-radius:8px; margin:10px 0;">`;
             };
+            let html = marked.parse(md, { renderer: renderer });
+            readerContainer.innerHTML = html;
 
-            const html = marked.parse(rawText, { renderer: renderer });
-            readerBody.innerHTML = html;
-
+            setTimeout(() => {
+                readerContainer.querySelectorAll('pre code').forEach(block => { if (window.hljs) hljs.highlightElement(block); });
+            }, 100);
         } catch (e) {
-            readerBody.innerHTML = `<div style="color:#ffcccc; text-align:center;">文章加载失败</div>`;
+            readerContainer.innerHTML = `<div style="color:#ffcccc; padding:20px;">加载失败</div>`;
         }
     }
 
-    // 6. 关闭阅读器
-    closeReaderBtn.addEventListener('click', () => {
-        readerOverlay.classList.add('hidden');
-    });
+    // 4. 自动打开定位逻辑
+    let isAutoOpening = false;
+    function tryAutoOpenReader() {
+        if (isAutoOpening || !allPosts || allPosts.length === 0) return;
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetTitle = urlParams.get('target');
+        if (!targetTitle) return;
+
+        const targetPost = allPosts.find(p => p.title === targetTitle);
+        if (!targetPost) return;
+
+        isAutoOpening = true;
+        const catBtns = document.querySelectorAll('#category-switch-list .list-item');
+        let targetCatBtn = null;
+        catBtns.forEach(btn => { if (btn.textContent.trim() === targetPost.category) targetCatBtn = btn; });
+        if (targetCatBtn) {
+            targetCatBtn.click();
+            setTimeout(() => {
+                const artItems = document.querySelectorAll('#article-switch-list .list-item');
+                let found = false;
+                artItems.forEach(item => { if (item.textContent.trim() === targetPost.title) { item.click(); found = true; } });
+                isAutoOpening = false;
+            }, 500);
+        } else {
+            isAutoOpening = false;
+        }
+    }
 
     // 启动
-    loadPadCategories();
-
+    loadCategoriesData();
+    setTimeout(tryAutoOpenReader, 600);
+    setTimeout(tryAutoOpenReader, 1200);
 })();

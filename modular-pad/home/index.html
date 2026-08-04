@@ -1,9 +1,8 @@
-<!-- 模块：平板端首页 (双栏排版) -->
-<!-- 文件目录：JASPERBLOG/modular-pad/home/index.html -->
-<div class="home-module-pad">
+<!-- 平板端主页：纯净组件版 -->
+<div class="pad-home-module">
     
-    <!-- 顶部：轮播图 (与电脑端相同，但高度稍矮) -->
-    <div class="hero-carousel glass-panel" id="heroCarousel">
+    <!-- 1. 沉浸式全宽轮播图 -->
+    <div class="pad-hero-widget glass-panel" id="heroCarousel">
         <button class="carousel-btn prev" id="carouselPrev"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="carousel-track-container">
             <ul class="carousel-track" id="carouselTrack"></ul>
@@ -12,32 +11,31 @@
         <div class="carousel-indicators" id="carouselIndicators"></div>
     </div>
 
-    <!-- 下方：两栏结构 -->
-    <div class="pad-two-col-grid">
-        
-        <!-- 左侧栏：公告 + 历史时间轴（竖向排列） -->
-        <div class="pad-col-left">
-            <div class="card glass-panel">
-                <div class="card-header"><i class="fa-regular fa-bell"></i> 公告板</div>
-                <div class="card-body" id="announcementList"></div>
-            </div>
-            <div class="card glass-panel" style="flex: 1;">
-                <div class="card-header">历史发布</div>
-                <div class="card-body">
-                    <ul id="historyList" style="list-style: none; line-height: 1.8; margin: 0; padding: 0;"></ul>
-                </div>
+    <!-- 2. 底部双列 Widget 布局 -->
+    <div class="pad-widgets-row">
+        <!-- 左侧公告板 -->
+        <div class="pad-widget-col">
+            <div class="widget-card glass-panel">
+                <div class="widget-header"><i class="fa-regular fa-bell"></i> 公告板</div>
+                <div class="widget-body" id="announcementList"></div>
             </div>
         </div>
 
-        <!-- 右侧栏：音乐播放器列表 -->
-        <div class="pad-col-right">
-            <div class="card glass-panel" style="height: 100%;">
-                <div class="card-header"><i class="fa-solid fa-headphones"></i> 音乐列表</div>
-                <div class="card-body" id="musicListContainer">
-                    <!-- 播放器由 JS 在此处动态注入 -->
+        <!-- 右侧历史发布 -->
+        <div class="pad-widget-col">
+            <div class="widget-card glass-panel">
+                <div class="widget-header"><i class="fa-regular fa-clock"></i> 历史发布</div>
+                <div class="widget-body" id="historyListContainer">
+                    <ul id="historyList" style="list-style: none; margin: 0; padding: 0;"></ul>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 3. 全宽底部播放器 Widget -->
+    <div class="pad-player-widget glass-panel">
+        <div class="widget-header"><i class="fa-solid fa-headphones"></i> 音乐播放器</div>
+        <div class="widget-body" id="musicListContainer"></div>
     </div>
 
 </div>

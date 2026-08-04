@@ -1,177 +1,321 @@
-JASPERBLOG/
-├── anit-debugging/
-│   └── anit.js
-├── data-base/
-│   ├── article/            (目录)
-│   ├── modular/            (目录)
-│   ├── music/              (目录)
-│   ├── notice/             (目录)
-│   ├── video/              (目录)
-│   └── catalog.json        (核心数据清单)
-├── modular-computer/
-│   ├── about/              (目录)
-│   ├── classification/     (目录)
-│   ├── collection/         (目录)
-│   ├── home               (完整模块)
-│   │   ├── carousel       (目录)
-│   │   │   ├── index.html
-│   │   │   ├── script.js
-│   │   │   └── style.css
-│   │   ├── history        (目录)
-│   │   │   ├── index.html
-│   │   │   ├── script.js
-│   │   │   └── style.css
-│   │   ├── music          (目录)
-│   │   │   ├── index.html
-│   │   │   ├── script.js
-│   │   │   └── style.css
-│   │   ├── notice         (目录)
-│   │   │   ├── index.html
-│   │   │   ├── script.js
-│   │   │   └── style.css
-│   │   ├── index.html
-│   │   ├── script.js
-│   │   └── style.css
-│   ├── setting/            (目录)
-│   └─togrther/          (目录)
-├── modular-pad/        (目录)
-├── modular-phone/      (目录)
-├── modular-watch/      (目录)
-├ overall-situation
-│       ├── right-click    (右键菜单子模块)
-│       │   ├── index.html
-│       │   ├── script.js
-│       │   └── style.css
-│       ├── taskbar        (任务栏子模块)
-│       │   ├── index.html
-│       │   ├── script.js
-│       │   └── style.css
-│       ├── equipment.js
-│       ├── overall.css
-│       ├── index.html
-│       └── overall.js
-└── index.js              (根目录下的index，只有框架，引入合并其余其他模块的index)
+ /* 
+内容：分类归档引擎 (多标签、三栏布局、阅读器) - 自动识别 URL 目标版
+文件目录：JASPERBLOG/modular-computer/categories/script.js 
+*/
+(function() {
+    const categorySwitchList = document.getElementById('category-switch-list');
+    const articleSwitchList = document.getElementById('article-switch-list');
+    const readerContainer = document.getElementById('embedded-reader-content');
+    const tabBar = document.getElementById('global-tab-bar');
 
+    let allPosts = [];
+    let hljsLoaded = false;
+    let openTabs = [];
 
+    const iconMap = {
+        "前端开发": "fa-solid fa-code", "后端架构": "fa-solid fa-server",
+        "UI/UX 设计": "fa-solid fa-pen-nib", "音乐分享": "fa-solid fa-headphones",
+        "生活随笔": "fa-solid fa-mug-saucer", "科技前沿": "fa-solid fa-microchip"
+    };
 
+    const EMPTY_STATE_HTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%;">
+            <h1 style="font-size: 40px; color: rgba(255,255,255,0.8); font-weight: 300; margin-bottom: 10px;">阅读文章区域</h1>
+            <p style="font-size: 15px; color: rgba(255,255,255,0.4);">请从左侧选择分类与文章以开始阅读</p>
+        </div>
+    `;
 
+    window.resetReaderToEmpty = function() {
+        readerContainer.innerHTML = EMPTY_STATE_HTML;
+        document.querySelectorAll('.article-item').forEach(el => el.classList.remove('active'));
+    };
+    window.closeEmbeddedReader = window.resetReaderToEmpty;
 
+    // 阅读器
+    async function openEmbeddedReader(post) {
+        if (!post || !post.mdPath) {
+            readerContainer.innerHTML = `<div style="padding:40px; color:#856404;">⚠️ 未配置 mdPath</div>`;
+            return;
+        }
 
-/* ==========================================================
- * 全系统亮暗主题自适应控制中心 - 完美变色版
- * ========================================================== */
+        readerContainer.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%; width:100%; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-circle-notch fa-spin" style="margin-right:10px;"></i> 加载中...</div>`;
 
-/* 1. 默认主题：暗色模式 */
-:root {
-    /* 字体颜色 */
-    --text-main: #ffffff;
-    --text-muted: rgba(255, 255, 255, 0.7);
-    --text-light: rgba(255, 255, 255, 0.4);
-    --text-contrast: #4F9CF7; /* 品牌蓝 */
+        try {
+            if (typeof marked === 'undefined') {
+                await new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js';
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                });
+            }
+            if (!hljsLoaded) {
+                await new Promise((resolve) => {
+                    const hljsScript = document.createElement('script');
+                    hljsScript.src = 'https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/highlight.min.js';
+                    document.head.appendChild(hljsScript);
+                    hljsScript.onload = resolve;
+                });
+                const hljsStyle = document.createElement('link');
+                hljsStyle.rel = 'stylesheet';
+                hljsStyle.href = 'https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css';
+                document.head.appendChild(hljsStyle);
+                hljsLoaded = true;
+            }
+
+            const res = await fetch(post.mdPath);
+            if (!res.ok) throw new Error('404');
+            const rawText = await res.text();
+
+            let baseUrl = '';
+            const idx = post.mdPath.lastIndexOf('/');
+            if (idx !== -1) baseUrl = post.mdPath.substring(0, idx + 1) + 'picture/';
+
+            const renderer = new marked.Renderer();
+            renderer.image = function(href, title, text) {
+                if (!href.startsWith('http') && !href.startsWith('/')) {
+                    href = baseUrl + href;
+                }
+                return `<img src="${href}" alt="${text}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0;">`;
+            };
+
+            let html = marked.parse(rawText, { renderer: renderer });
+            html = html.replace(/<pre><code/g, '<pre><code class="hljs"');
+
+            readerContainer.innerHTML = `
+                <div id="reader-window-box" style="display: flex; flex-direction: column; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); border-radius: 16px; overflow: hidden; box-sizing: border-box;">
+                    <div class="reader-title-bar" style="flex-shrink: 0; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #eee; background: #f8f9fa;">
+                        <div style="font-size: 14px; font-weight: bold; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;">${post.title}</div>
+                        <div style="display: flex; gap: 12px;">
+                            <button onclick="toggleReaderFullscreen()" style="background: #28c840; border: none; width: 14px; height: 14px; border-radius: 50%; cursor: pointer;"></button>
+                            <button onclick="toggleReaderDarkMode()" style="background: #888; border: none; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; transition: 0.2s;"></button>
+                            <button onclick="resetReaderToEmpty()" style="background: #ff5f57; border: none; width: 14px; height: 14px; border-radius: 50%; cursor: pointer;"></button>
+                        </div>
+                    </div>
+                    <div class="reader-body-bg" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 30px; background: #ffffff; font-family: 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;">
+                        <div class="reader-body-text" style="max-width: 100%; word-wrap: break-word; text-align: left; color: #222; line-height: 1.8; font-size: 16px;">
+                            ${html}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                document.querySelectorAll('#reader-window-box pre code').forEach((block) => {
+                    if (window.hljs) {
+                        window.hljs.highlightElement(block);
+                    }
+                });
+            }, 100);
+
+        } catch (error) {
+            console.error(error);
+            readerContainer.innerHTML = `<div style="padding:40px; color:#ffcccc;">加载失败</div>`;
+        }
+    }
+
+    function renderTabs() {
+        tabBar.innerHTML = '';
+        if (openTabs.length === 0) {
+            const defaultTab = document.createElement('div');
+            defaultTab.className = 'tab-item active';
+            defaultTab.innerHTML = `<i class="fa-solid fa-folder-open"></i><span class="tab-title">分类归档</span>`;
+            tabBar.appendChild(defaultTab);
+        } else {
+            openTabs.forEach((tab, index) => {
+                const tabEl = document.createElement('div');
+                tabEl.className = 'tab-item';
+                if (tab.isActive) tabEl.classList.add('active');
+                tabEl.innerHTML = `
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span class="tab-title">${tab.title}</span>
+                    <span class="tab-close" data-index="${index}">×</span>
+                `;
+                tabEl.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('tab-close')) return;
+                    openTabs.forEach(t => t.isActive = false);
+                    tab.isActive = true;
+                    renderTabs();
+                    openEmbeddedReader(tab.postData);
+                });
+                const closeBtn = tabEl.querySelector('.tab-close');
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeTab(index);
+                });
+                tabBar.appendChild(tabEl);
+            });
+        }
+        const addBtn = document.createElement('div');
+        addBtn.className = 'tab-add-btn';
+        addBtn.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+        tabBar.appendChild(addBtn);
+        const spacer = document.createElement('div');
+        spacer.style.cssText = 'flex:1;';
+        tabBar.appendChild(spacer);
+    }
+
+    function closeTab(index) {
+        openTabs.splice(index, 1);
+        if (openTabs.length > 0) {
+            const nextIndex = Math.min(index, openTabs.length - 1);
+            openTabs[nextIndex].isActive = true;
+            renderTabs();
+            openEmbeddedReader(openTabs[nextIndex].postData);
+        } else {
+            renderTabs();
+            resetReaderToEmpty();
+        }
+    }
+
+    function addTab(post) {
+        const existingTab = openTabs.find(t => t.postData.title === post.title);
+        if (existingTab) {
+            openTabs.forEach(t => t.isActive = false);
+            existingTab.isActive = true;
+            renderTabs();
+            openEmbeddedReader(post);
+            return;
+        }
+        openTabs.forEach(t => t.isActive = false);
+        openTabs.push({ title: post.title, postData: post, isActive: true });
+        renderTabs();
+        openEmbeddedReader(post);
+    }
+
+    async function loadCategoriesData() {
+        try {
+            const response = await fetch('/data-base/catalog.json');
+            if (!response.ok) throw new Error(`读取失败: ${response.status}`);
+            const data = await response.json();
+            allPosts = data.posts || [];
+            if (allPosts.length === 0) {
+                categorySwitchList.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 20px;">暂无文章数据</div>`;
+                return;
+            }
+            renderTabs();
+            renderCategorySwitcher(allPosts);
+        } catch (error) {
+            console.error('数据加载失败:', error);
+            categorySwitchList.innerHTML = `<div style="color:#ffcccc; text-align:center; padding:20px;">未能读取到 /data-base/catalog.json</div>`;
+        }
+    }
+
+    // 渲染左侧分类
+    function renderCategorySwitcher(posts) {
+        const categories = [...new Set(posts.map(p => p.category))];
+        const defaultCat = categories.length > 0 ? categories[0] : null;
+        categorySwitchList.innerHTML = '';
+        categories.forEach(cat => {
+            const btn = document.createElement('div');
+            btn.className = 'category-btn';
+            const iconClass = iconMap[cat] || "fa-regular fa-folder";
+            btn.innerHTML = `<i class="${iconClass}"></i> ${cat}`;
+            if (cat === defaultCat) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                renderArticleList(posts.filter(p => p.category === cat));
+            });
+            categorySwitchList.appendChild(btn);
+        });
+        if (defaultCat) {
+            const firstBtn = categorySwitchList.querySelector('.category-btn');
+            if (firstBtn) firstBtn.click();
+        }
+    }
+
+    // 渲染中间文章列表
+    function renderArticleList(filteredPosts) {
+        const sorted = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        articleSwitchList.innerHTML = '';
+        if (sorted.length === 0) {
+            articleSwitchList.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 20px;">该分类暂无文章</div>`;
+            return;
+        }
+        sorted.forEach((post, index) => {
+            const item = document.createElement('div');
+            item.className = 'article-item';
+            if (index === 0) item.classList.add('active');
+            item.innerHTML = `<div class="title">${post.title}</div><div class="subtitle">${post.subtitle || '无副标题'}</div>`;
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.article-item').forEach(el => el.classList.remove('active'));
+                item.classList.add('active');
+                addTab(post);
+            });
+            articleSwitchList.appendChild(item);
+        });
+    }
+
+    // ==========================================================
+    // 【新增】：自动识别 URL 参数并自动跳转阅读器
+    // ==========================================================
+    let isAutoOpening = false;
+
+    function tryAutoOpenReader() {
+        // 如果正在自动打开过程中，或者分类/文章列表没加载出来，跳过
+        if (isAutoOpening || !allPosts || allPosts.length === 0) return;
+        
+        // 从 URL 中提取 target 参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetTitle = urlParams.get('target');
+        
+        if (!targetTitle) return;
+
+        console.log(`检测到目标文章: ${targetTitle}`);
+
+        // 1. 查找目标文章是否存在
+        const targetPost = allPosts.find(p => p.title === targetTitle);
+        if (!targetPost) {
+            console.warn("未在数据中找到对应文章");
+            return;
+        }
+
+        isAutoOpening = true;
+
+        // 2. 查找并激活对应的分类
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        let targetCatBtn = null;
+        categoryBtns.forEach(btn => {
+            if (btn.textContent.trim() === targetPost.category) {
+                targetCatBtn = btn;
+            }
+        });
+
+        if (targetCatBtn) {
+            // 触发分类切换
+            targetCatBtn.click();
+
+            // 3. 等待文章列表渲染完毕后，自动点击对应文章
+            setTimeout(() => {
+                const articleItems = document.querySelectorAll('.article-item');
+                let found = false;
+                articleItems.forEach(item => {
+                    const titleEl = item.querySelector('.title');
+                    if (titleEl && titleEl.textContent.trim() === targetPost.title) {
+                        item.click(); // 触发阅读器
+                        found = true;
+                        console.log(" 成功自动打开文章:", targetPost.title);
+                    }
+                });
+                if (!found) {
+                    console.warn("目标文章未出现在列表中，可能分类错误");
+                }
+                isAutoOpening = false;
+            }, 800); // 延迟 800 毫秒确保列表已刷新
+            
+        } else {
+            console.warn("未找到对应的分类按钮");
+            isAutoOpening = false;
+        }
+    }
+
+    // 启动分类引擎
+    loadCategoriesData();
+
+    // 延迟执行自动打开逻辑，确保页面数据加载完毕
+    setTimeout(tryAutoOpenReader, 500);
     
-    /* 背景与毛玻璃 */
-    --bg-card: rgba(255, 255, 255, 0.05);
-    --bg-taskbar: rgba(16, 20, 30, 0.60); /* 暗色玻璃 */
-    --bg-overlay: rgba(0, 0, 0, 0.4);
-    --border-color: rgba(79, 156, 247, 0.3);
-    --shadow-color: rgba(0, 0, 0, 0.5);
-}
-
-/* 2. 亮色模式变量重写 (字体变黑，背景变透) */
-body.light-mode {
-    --text-main: #222222;          /* 核心文字变深灰 */
-    --text-muted: rgba(50, 50, 50, 0.7);
-    --text-light: rgba(50, 50, 50, 0.5);
-    
-    --bg-card: rgba(255, 255, 255, 0.30);
-    --bg-taskbar: rgba(255, 255, 255, 0.55); /* 亮色毛玻璃 */
-    --bg-overlay: rgba(255, 255, 255, 0.1);
-    --border-color: rgba(79, 156, 247, 0.5);
-    --shadow-color: rgba(0, 0, 0, 0.08);
-}
-
-/* 3. 基础重置与容器 */
-body, html {
-    margin: 0; padding: 0; overflow: hidden;
-    font-family: -apple-system, sans-serif;
-    color: var(--text-main);
-    background-color: #1a1a1a; /* 兜底背景 */
-}
-
-#root, #app-module-container {
-    color: var(--text-main);
-}
-
-/* 4. 桌面壁纸 */
-.desktop-wallpaper {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('./background.png'); background-size: cover; background-position: center; z-index: 0;
-}
-
-/* 5. 毛玻璃面板标准模板 (用于统一各级卡片) */
-.glass-panel, .glass-effect, .settings-card, .submit-card, .pc-submit-section, .pad-submit-section, .phone-submit-section, .watch-submit-section, .category-btn, .article-item, .about-card, .taskbar-item {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: var(--text-main) !important;
-    box-shadow: 0 4px 15px var(--shadow-color);
-}
-
-/* 6. 字体颜色强制覆盖 (打底) */
-h1, h2, h3, h4, h5, h6, p, span, div, a, li, i, button, input, textarea, .taskbar-item, .t-item, .mode-btn, .topbar-left, .topbar-right, .taskbar-left, .taskbar-right, .taskbar-center {
-    color: var(--text-main) !important;
-    transition: color 0.3s ease, background 0.3s ease;
-}
-
-.text-muted, .desc, .subtitle, input::placeholder {
-    color: var(--text-muted) !important;
-}
-.brand-text {
-    color: var(--text-contrast) !important;
-}
-
-/* 7. 交互状态 (鼠标悬停及激活) */
-.t-item:hover, .taskbar-item:hover, .mode-btn:hover, .category-btn:hover, .article-item:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: var(--text-main) !important;
-}
-.t-item.active, .taskbar-item.active, .mode-btn.active {
-    background: rgba(79, 156, 247, 0.15) !important;
-    border: 1px solid rgba(79, 156, 247, 0.2) !important;
-    color: var(--text-contrast) !important;
-}
-
-
-/* ==========================================================
- * 【核弹级清除】：强制抹除所有残留的顶部黑块
- * ========================================================== */
-#global-mode-switcher,
-#global-mode-switcher .topbar-left,
-#global-mode-switcher .topbar-center,
-#global-mode-switcher .topbar-right,
-#global-mode-switcher .mode-btn,
-#global-mode-switcher > div {
-    background: transparent !important;
-    border: none !important;
-    border-bottom: none !important;
-    box-shadow: none !important;
-}
-
-/* 彻底覆盖任何可能带背景或边框的幽灵元素 */
-#global-mode-switcher .switcher-panel {
-    background: var(--bg-taskbar) !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-/* 特别针对你截图中那个带有 "JASPER Blog" 文字的残留块进行物理删除 */
-.topbar-left, .topbar-left span, .topbar-left i, .topbar-left div {
-    background: transparent !important;
-    border: none !important;
-    color: var(--text-main) !important;
-}
-
-/* 如果旧 HTML 里的 JASPER Blog 文字块还没彻底干掉，这里确保它彻底透明 */
-div[class*="topbar-left"], div[class*="JASPER"] {
-    background: transparent !important;
-}
+    // 额外安全措施：若浏览器渲染慢，再多等一秒再尝试一次
+    setTimeout(tryAutoOpenReader, 1200);
+})();

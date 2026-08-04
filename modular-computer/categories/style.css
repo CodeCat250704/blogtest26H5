@@ -115,3 +115,63 @@
 .category-btn.active, .article-item.active {
     background: rgba(var(--text-contrast), 0.15); border-color: var(--text-contrast); color: var(--text-contrast);
 }
+
+/* 
+内容：电脑端分类页专属样式 (独立全屏版，自带亮暗变量)
+文件目录：JASPERBLOG/modular-computer/categories/style.css 
+*/
+
+/* 亮色模式默认变量 */
+:root {
+    --bg-main: #f0f4f8;
+    --text-main: #111;
+    --text-muted: #666;
+    --border-main: rgba(79, 156, 247, 0.3);
+    --bg-glass: rgba(255, 255, 255, 0.15);
+}
+
+/* 暗色模式 */
+body.dark-mode {
+    --bg-main: #1a1a1a;
+    --text-main: #eee;
+    --text-muted: #999;
+    --border-main: rgba(79, 156, 247, 0.5);
+    --bg-glass: rgba(0, 0, 0, 0.4);
+}
+
+/* 应用变量到已有的 HTML 结构 */
+.categories-module {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-main);
+}
+.global-tab-bar {
+    border-bottom: 1px solid var(--border-main);
+}
+.nav-pane, .content-pane {
+    border-right: 1px solid var(--border-main);
+}
+.reading-content {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-main);
+}
+.tab-item, .category-btn, .article-item, .address-bar input, .empty-preview h1, .empty-preview p {
+    color: var(--text-main);
+}
+.address-bar {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-main);
+}
+.address-bar input::placeholder, .tab-item {
+    color: var(--text-muted);
+}
+.tab-item:hover, .category-btn:hover, .article-item:hover {
+    background: rgba(255,255,255,0.1);
+}
+.tab-item.active, .category-btn.active, .article-item.active {
+    background: rgba(79, 156, 247, 0.2);
+    border-color: #4F9CF7;
+    color: #4F9CF7;
+}
+.article-item .subtitle {
+    color: var(--text-muted);
+}
