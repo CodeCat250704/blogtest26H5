@@ -295,7 +295,7 @@
                     if (titleEl && titleEl.textContent.trim() === targetPost.title) {
                         item.click(); // 触发阅读器
                         found = true;
-                        console.log("✅ 成功自动打开文章:", targetPost.title);
+                        console.log(" 成功自动打开文章:", targetPost.title);
                     }
                 });
                 if (!found) {
